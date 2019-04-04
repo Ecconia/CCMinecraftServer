@@ -1,23 +1,30 @@
 package de.ecconia.mcserver.network;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.crypto.SecretKey;
+
 import de.ecconia.mcserver.Core;
+import de.ecconia.mcserver.network.helper.DecrytionWrapper;
+import de.ecconia.mcserver.network.helper.Reader;
+import de.ecconia.mcserver.network.helper.StreamWrapper;
+import de.ecconia.mcserver.network.helper.SyncCryptUnit;
 
 public class ClientConnection
 {
 	private static int clientID = 1;
-	private InputStream is;
 	private OutputStream os;
 	
 	private final Socket socket;
 	private final int id;
+	
+	private SyncCryptUnit crypter;
+	private Reader reader;
 	
 	private Handler handler;
 	
@@ -35,13 +42,13 @@ public class ClientConnection
 		
 		try
 		{
-			//TODO: Wrapper class for accessing this stream:
-			is = socket.getInputStream();
+			reader = new StreamWrapper(socket.getInputStream());
 			os = socket.getOutputStream();
 		}
 		catch(IOException e)
 		{
 			e.printStackTrace(System.out);
+			return;
 		}
 		
 		Thread readingThread = new Thread(() -> {
@@ -49,7 +56,7 @@ public class ClientConnection
 			{
 				while(true)
 				{
-					int firstByte = is.read();
+					int firstByte = reader.readByte();
 					if(firstByte == -1)
 					{
 						//Connection broken.
@@ -67,14 +74,15 @@ public class ClientConnection
 					}
 					
 					int packetSize = readCInt((byte) firstByte);
-					byte[] packet = readBytes(packetSize);
+					byte[] packet = reader.readBytes(packetSize);
 					
 					String packetMsg = packetSize + ":[";
 					for(int i = 0; i < packet.length - 1; i++)
 					{
 						packetMsg += (packet[i] & 255) + ",";
 					}
-					packetMsg += packet[packetSize - 1] + "]";
+					//TODO: Throws an exception on empty packet.
+					packetMsg += (packet[packetSize - 1] & 255) + "]";
 					debug("{Packet} " + packetMsg);
 					
 					handler.handlePacket(packet);
@@ -98,6 +106,11 @@ public class ClientConnection
 					byte[] packet = sendingQueue.take();
 					//Prepend size
 					packet = prependCInt(packet, packet.length);
+					
+					if(crypter != null)
+					{
+						packet = crypter.encryptBytes(packet);
+					}
 					
 					try
 					{
@@ -157,46 +170,9 @@ public class ClientConnection
 		this.handler = handler;
 	}
 	
-	public byte[] readBytes(int amount) throws IOException
-	{
-		try
-		{
-			byte[] bytes = new byte[amount];
-			
-			int pointer = 0;
-			int remaining = amount;
-			
-			while(remaining > 0)
-			{
-				int amountRead = is.read(bytes, pointer, remaining);
-				if(amountRead == -1)
-				{
-					debug("> Nuuuut 1");
-//					throw new IOException("Nuuuut 1");
-					return new byte[0];
-				}
-				
-				remaining -= amountRead;
-				pointer += amountRead;
-			}
-			
-//			bytesRead += amount;
-			return bytes;
-		}
-		catch(IOException e)
-		{
-			throw e;//new DirtyIOException(e);
-		}
-	}
-	
 	public void debug(String message)
 	{
 		System.out.println(id + " " + message);
-	}
-	
-	public int getId()
-	{
-		return id;
 	}
 	
 	private int readCInt(byte first) throws IOException
@@ -210,7 +186,7 @@ public class ClientConnection
 		
 		while((read & 128) == 128)
 		{
-			read = (byte) is.read();
+			read = reader.readByte();
 			value |= (read & 127) << iteration++ * 7;
 			
 			if(iteration > 5)
@@ -224,11 +200,25 @@ public class ClientConnection
 	
 	public void close()
 	{
-		//TODO: Socket.close();
+		try
+		{
+			socket.close();
+		}
+		catch(IOException e)
+		{
+			//Actually idgaf
+			e.printStackTrace(System.out);
+		}
 	}
 	
 	public String getConnectingIP()
 	{
 		return ((InetSocketAddress) socket.getRemoteSocketAddress()).getHostString();
+	}
+
+	public void enableEncryption(SecretKey sharedKey)
+	{
+		crypter = new SyncCryptUnit(sharedKey);
+		reader = new DecrytionWrapper(reader, crypter);
 	}
 }

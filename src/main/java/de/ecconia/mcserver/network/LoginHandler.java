@@ -1,11 +1,15 @@
 package de.ecconia.mcserver.network;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Random;
 
 import javax.crypto.SecretKey;
 
 import de.ecconia.mcserver.Core;
+import de.ecconia.mcserver.json.JSONNode;
+import de.ecconia.mcserver.json.JSONObject;
+import de.ecconia.mcserver.json.JSONParser;
 import de.ecconia.mcserver.network.helper.AsyncCryptTools;
 import de.ecconia.mcserver.network.helper.AuthServer;
 import de.ecconia.mcserver.network.helper.PacketBuilder;
@@ -113,9 +117,35 @@ public class LoginHandler implements Handler
 			}
 			
 			SecretKey sharedKey = AsyncCryptTools.secredKeyFromBytes(decryptedSharedKeyBytes);
+			
+			//TBI: Enable encrytion now? Will the future error message be decrypted on the client side?
+			cc.enableEncryption(sharedKey);
+			
 			String serverHash = AsyncCryptTools.generateHashFromBytes("", sharedKey.getEncoded(), core.getKeyPair().getPublic().getEncoded());
 			
-			AuthServer.hasJoin(username, serverHash, cc.getConnectingIP());
+			//Yeeee nice! At this point we got the UUID! Lets not care further :P
+			//TODO: Use this information!
+			//It should be validated for sure. Cause else network attacks are possible.
+			String json = AuthServer.hasJoin(username, serverHash, cc.getConnectingIP());
+			JSONNode node = JSONParser.parse(json);
+			if(node instanceof JSONObject)
+			{
+				JSONObject userObject = (JSONObject) node;
+				Map<String, Object> entries = userObject.getEntries();
+				if(entries.containsKey("id") && entries.containsKey("name") && entries.containsKey("properties"))
+				{
+					
+					//TODO: Yay we got to this point, lets request compression.
+				}
+				else
+				{
+					disconnect("Oops, something went wrong when asking the auth servers for your info. ArE yOu ReAl? Got a valid token?");
+				}
+			}
+			else
+			{
+				disconnect("Oops, something went wrong when asking the auth servers for your info. ArE yOu ReAl? Got a valid token?");
+			}
 		}
 		else
 		{

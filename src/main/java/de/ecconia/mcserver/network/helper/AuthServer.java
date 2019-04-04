@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 
 public class AuthServer
 {
-	public static void hasJoin(String username, String hash, String ip)
+	public static String hasJoin(String username, String hash, String ip)
 	{
 		String link = "https://sessionserver.mojang.com/session/minecraft/hasJoined?username=" + username + "&serverId=" + hash + "&ip=" + ip;
 		
@@ -19,6 +19,8 @@ public class AuthServer
 			String response = request(link);
 			
 			System.out.println(response);
+			
+			return response;
 			
 //			if(!response.isEmpty())
 //			{
