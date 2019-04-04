@@ -14,16 +14,20 @@ public class ClientConnection
 //	private OutputStream os;
 	private final int id;
 	
+	private Handler handler;
+	
 	public ClientConnection(Core core, Socket socket)
 	{
 		this.id = clientID++;
 		//TODO: Only do this, once the "connection" wants to join the server (and has been validated).
 		core.addClient(this);
 		
-		System.out.println(id + " <<<< " + ((InetSocketAddress) socket.getRemoteSocketAddress()).getHostString());
+		debug("<<<< " + ((InetSocketAddress) socket.getRemoteSocketAddress()).getHostString());
+		setHandler(new HandshakeHandler(this, core));
 		
 		try
 		{
+			//TODO: Wrapper class for accessing this stream:
 			is = socket.getInputStream();
 //			os = socket.getOutputStream();
 		}
@@ -31,6 +35,7 @@ public class ClientConnection
 		{
 			e.printStackTrace(System.out);
 		}
+		
 		Thread readingThread = new Thread(() -> {
 			try
 			{
@@ -40,13 +45,15 @@ public class ClientConnection
 					if(firstByte == -1)
 					{
 						//Connection broken.
-						System.out.println(id + " closed.");
+						debug("closed.");
 						return;
 					}
 					
+					//TODO: Move outside of this Thread, its okay to read on the client thread!
+					//Should only be checked for the very very very first byte received!
 					if(firstByte == 254)
 					{
-						System.out.println(id + " aborted. Detected legacy ping packet, abort this connection.");
+						debug("aborted. Detected legacy ping packet, abort this connection.");
 						socket.close();
 						return;
 					}
@@ -60,7 +67,9 @@ public class ClientConnection
 						packetMsg += (packet[i] & 255) + ",";
 					}
 					packetMsg += packet[packetSize - 1] + "]";
-					System.out.println(id + " >>> " + packetMsg);
+					debug("[PacketData] " + packetMsg);
+					
+					handler.handlePacket(packet);
 				}
 			}
 			catch(IOException e)
@@ -69,12 +78,18 @@ public class ClientConnection
 			}
 		}, "ReadingThread");
 		readingThread.setUncaughtExceptionHandler((t, e) -> {
-			System.out.println(id + " > " + e.getClass().getSimpleName() + (e.getMessage() != null ? " " + e.getMessage() : ""));
+			debug("> " + e.getClass().getSimpleName() + (e.getMessage() != null ? " " + e.getMessage() : ""));
 		});
 		readingThread.start();
 		
 //		Thread sendingThread = new Thread(() -> {
 //		}, "SendingThread");
+	}
+	
+	public void setHandler(Handler handler)
+	{
+		debug("<< setHandler: " + handler.getClass().getSimpleName());
+		this.handler = handler;
 	}
 	
 	public byte[] readBytes(int amount) throws IOException
@@ -91,7 +106,7 @@ public class ClientConnection
 				int amountRead = is.read(bytes, pointer, remaining);
 				if(amountRead == -1)
 				{
-					System.out.println(id + " > Nuuuut 1");
+					debug("> Nuuuut 1");
 //					throw new IOException("Nuuuut 1");
 					return new byte[0];
 				}
@@ -107,6 +122,16 @@ public class ClientConnection
 		{
 			throw e;//new DirtyIOException(e);
 		}
+	}
+	
+	public void debug(String message)
+	{
+		System.out.println(id + " " + message);
+	}
+	
+	public int getId()
+	{
+		return id;
 	}
 	
 	private int readCInt(byte first) throws IOException
@@ -130,5 +155,10 @@ public class ClientConnection
 		}
 		
 		return value;
+	}
+
+	public void close()
+	{
+		//TODO: Socket.close();
 	}
 }
