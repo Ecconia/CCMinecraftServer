@@ -1,20 +1,25 @@
-package de.ecconia.mcserver;
+package de.ecconia.mcserver.network;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-public class ClientReceiver
+import de.ecconia.mcserver.Core;
+
+public class ClientConnection
 {
 	private static int clientID = 1;
 	private InputStream is;
 //	private OutputStream os;
 	private final int id;
 	
-	public ClientReceiver(Socket socket)
+	public ClientConnection(Core core, Socket socket)
 	{
 		this.id = clientID++;
+		//TODO: Only do this, once the "connection" wants to join the server (and has been validated).
+		core.addClient(this);
+		
 		System.out.println(id + " <<<< " + ((InetSocketAddress) socket.getRemoteSocketAddress()).getHostString());
 		
 		try
@@ -49,10 +54,10 @@ public class ClientReceiver
 					int packetSize = readCInt((byte) firstByte);
 					byte[] packet = readBytes(packetSize);
 					
-					String packetMsg = packetSize + " : [";
+					String packetMsg = packetSize + ":[";
 					for(int i = 0; i < packet.length - 1; i++)
 					{
-						packetMsg += "" + (packet[i] & 255) + ",";
+						packetMsg += (packet[i] & 255) + ",";
 					}
 					packetMsg += packet[packetSize - 1] + "]";
 					System.out.println(id + " >>> " + packetMsg);
