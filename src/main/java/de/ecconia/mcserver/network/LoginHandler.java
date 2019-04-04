@@ -3,6 +3,7 @@ package de.ecconia.mcserver.network;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -134,8 +135,26 @@ public class LoginHandler implements Handler
 				Map<String, Object> entries = userObject.getEntries();
 				if(entries.containsKey("id") && entries.containsKey("name") && entries.containsKey("properties"))
 				{
+					String stringUUID = (String) entries.get("id");
+					UUID uuid = fixUUID(stringUUID);
+					String name = (String) entries.get("name");
 					
+					//Send compression packet:
+					//TODO: Enable and support compression!
+//					PacketBuilder pb = new PacketBuilder();
+//					pb.addCInt(3);
+//					pb.addCInt(1024);
+//					cc.sendPacket(pb.asBytes());
+					
+					//Set join allow:
+					PacketBuilder pb = new PacketBuilder();
+					pb.addCInt(2);
+					pb.addString(uuid.toString());
+					pb.addString(name);
+					cc.sendPacket(pb.asBytes());
 					//TODO: Yay we got to this point, lets request compression.
+					
+					cc.setHandler(new GameHandler(core, cc));
 				}
 				else
 				{
@@ -152,6 +171,12 @@ public class LoginHandler implements Handler
 			cc.debug("[LH] [WARNING] Unknown ID: " + id);
 			cc.close();
 		}
+	}
+	
+	private UUID fixUUID(String uuid)
+	{
+		String newUUIDString = uuid.substring(0, 9) + '-' + uuid.substring(9, 13) + '-' + uuid.substring(13, 17) + '-' + uuid.substring(17, 21) + '-' + uuid.substring(21);
+		return UUID.fromString(newUUIDString);
 	}
 	
 	private void disconnect(String message)
