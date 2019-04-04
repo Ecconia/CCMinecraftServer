@@ -15,6 +15,8 @@ public class ClientConnection
 	private static int clientID = 1;
 	private InputStream is;
 	private OutputStream os;
+	
+	private final Socket socket;
 	private final int id;
 	
 	private Handler handler;
@@ -23,6 +25,7 @@ public class ClientConnection
 	
 	public ClientConnection(Core core, Socket socket)
 	{
+		this.socket = socket;
 		this.id = clientID++;
 		//TODO: Only do this, once the "connection" wants to join the server (and has been validated).
 		core.addClient(this);
@@ -72,7 +75,7 @@ public class ClientConnection
 						packetMsg += (packet[i] & 255) + ",";
 					}
 					packetMsg += packet[packetSize - 1] + "]";
-					debug("[PacketData] " + packetMsg);
+					debug("{Packet} " + packetMsg);
 					
 					handler.handlePacket(packet);
 				}
@@ -218,9 +221,14 @@ public class ClientConnection
 		
 		return value;
 	}
-
+	
 	public void close()
 	{
 		//TODO: Socket.close();
+	}
+	
+	public String getConnectingIP()
+	{
+		return ((InetSocketAddress) socket.getRemoteSocketAddress()).getHostString();
 	}
 }

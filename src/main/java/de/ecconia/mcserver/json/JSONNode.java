@@ -59,7 +59,7 @@ public abstract class JSONNode
 		//TBI: Regex, or different method?
 		s = s.replace("\\", "\\\\");
 		s = s.replace("\"", "\\\"");
-//		s = s.replace("/", "\\/");
+		s = s.replace("/", "\\/");
 		s = s.replace("\b", "\\b");
 		s = s.replace("\f", "\\f");
 		s = s.replace("\n", "\\n");

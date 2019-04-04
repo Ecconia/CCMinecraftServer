@@ -15,7 +15,8 @@ import de.ecconia.mcserver.network.helper.PacketReader;
 
 public class StatusHandler implements Handler
 {
-	private final Core core;
+	@SuppressWarnings("unused")
+	private final Core core; //TODO: "use" -> Get the information for the server ping from there.
 	private final ClientConnection cc;
 	
 	public StatusHandler(Core core, ClientConnection cc)
@@ -30,9 +31,13 @@ public class StatusHandler implements Handler
 		PacketReader reader = new PacketReader(bytes);
 		int id = reader.readCInt();
 		
-		cc.debug("[SH] " + id + " -> " + reader.toString());
 		if(id == 0)
 		{
+			if(reader.remaining() > 0)
+			{
+				cc.debug("WARNING: Status packet not fully read! Bytes: " + reader.toString());
+			}
+			
 			JSONObject root = new JSONObject();
 			
 			//Version section:
@@ -74,7 +79,7 @@ public class StatusHandler implements Handler
 			}
 			
 			String json = root.printJSON();
-			System.out.println("Sending json: " + json);
+			cc.debug("Sending json: " + json);
 			
 			PacketBuilder mb = new PacketBuilder();
 			mb.addCInt(0);
