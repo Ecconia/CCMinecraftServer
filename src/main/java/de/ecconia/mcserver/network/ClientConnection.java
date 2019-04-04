@@ -2,8 +2,11 @@ package de.ecconia.mcserver.network;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import de.ecconia.mcserver.Core;
 
@@ -11,10 +14,12 @@ public class ClientConnection
 {
 	private static int clientID = 1;
 	private InputStream is;
-//	private OutputStream os;
+	private OutputStream os;
 	private final int id;
 	
 	private Handler handler;
+	
+	private final BlockingQueue<byte[]> sendingQueue = new LinkedBlockingQueue<>();
 	
 	public ClientConnection(Core core, Socket socket)
 	{
@@ -29,7 +34,7 @@ public class ClientConnection
 		{
 			//TODO: Wrapper class for accessing this stream:
 			is = socket.getInputStream();
-//			os = socket.getOutputStream();
+			os = socket.getOutputStream();
 		}
 		catch(IOException e)
 		{
@@ -82,8 +87,65 @@ public class ClientConnection
 		});
 		readingThread.start();
 		
-//		Thread sendingThread = new Thread(() -> {
-//		}, "SendingThread");
+		Thread sendingThread = new Thread(() -> {
+			while(true)
+			{
+				try
+				{
+					byte[] packet = sendingQueue.take();
+					//Prepend size
+					packet = prependCInt(packet, packet.length);
+					
+					try
+					{
+						//Send packet
+						os.write(packet);
+						os.flush();
+					}
+					catch(IOException e)
+					{
+						e.printStackTrace(System.out);
+					}
+				}
+				catch(InterruptedException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		}, "SendingThread");
+		sendingThread.start();
+	}
+	
+	public void sendPacket(byte[] packet)
+	{
+		try
+		{
+			sendingQueue.put(packet);
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace(System.out);
+		}
+	}
+	
+	public static byte[] prependCInt(byte[] bytes, int i)
+	{
+		byte[] buffer = new byte[6];
+		int pointer = 0;
+		
+		while((i & -128) != 0)
+		{
+			buffer[pointer++] = (byte) (i & 127 | 128);
+			i >>>= 7;
+		}
+		
+		buffer[pointer++] = (byte) i;
+		
+		byte[] output = new byte[bytes.length + pointer];
+		System.arraycopy(buffer, 0, output, 0, pointer);
+		System.arraycopy(bytes, 0, output, pointer, bytes.length);
+		
+		return output;
 	}
 	
 	public void setHandler(Handler handler)
