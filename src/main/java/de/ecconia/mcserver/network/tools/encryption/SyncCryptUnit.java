@@ -1,11 +1,10 @@
-package de.ecconia.mcserver.network.helper;
+package de.ecconia.mcserver.network.tools.encryption;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.ShortBufferException;
@@ -25,7 +24,7 @@ public class SyncCryptUnit
 		}
 		catch(InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e)
 		{
-			throw new CipherException("Exception creating decryption cipher.", e);
+			throw new CipherException("Could not create decryption cipher.", e);
 		}
 		
 		try
@@ -35,7 +34,7 @@ public class SyncCryptUnit
 		}
 		catch(InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException e)
 		{
-			throw new CipherException("Exception creating encryption cipher.", e);
+			throw new CipherException("Could not create encryption cipher.", e);
 		}
 	}
 	
@@ -55,7 +54,7 @@ public class SyncCryptUnit
 		}
 		catch(ShortBufferException e)
 		{
-			throw new CipherException("Exception decrypting bytes.", e);
+			throw new CipherException("Could not decrypt bytes.", e);
 		}
 	}
 	
@@ -70,23 +69,7 @@ public class SyncCryptUnit
 		}
 		catch(ShortBufferException e)
 		{
-			throw new CipherException("Exception encrypting bytes.", e);
-		}
-	}
-	
-	public static SecretKey generateKey()
-	{
-		KeyGenerator gen;
-		try
-		{
-			gen = KeyGenerator.getInstance("AES");
-			gen.init(128);
-			return gen.generateKey();
-		}
-		catch(NoSuchAlgorithmException e)
-		{
-			//Do not capture this, terminate everything.
-			throw new FatalException("ERROR: Exception while gnerating synced encryption key: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+			throw new CipherException("Could not encrypt bytes.", e);
 		}
 	}
 }

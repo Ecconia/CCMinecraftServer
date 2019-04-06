@@ -1,11 +1,13 @@
-package de.ecconia.mcserver.network.helper;
+package de.ecconia.mcserver.network.helper.reader;
 
-public class DecrytionWrapper implements Reader
+import de.ecconia.mcserver.network.tools.encryption.SyncCryptUnit;
+
+public class DecrytionReader implements Reader
 {
 	private final Reader reader;
 	private final SyncCryptUnit crypter;
 	
-	public DecrytionWrapper(Reader reader, SyncCryptUnit crypter)
+	public DecrytionReader(Reader reader, SyncCryptUnit crypter)
 	{
 		this.reader = reader;
 		this.crypter = crypter;
@@ -16,7 +18,7 @@ public class DecrytionWrapper implements Reader
 	{
 		return crypter.decryptByte(reader.readByte());
 	}
-
+	
 	@Override
 	public byte[] readBytes(int amount)
 	{

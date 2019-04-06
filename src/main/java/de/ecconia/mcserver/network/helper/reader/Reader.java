@@ -1,4 +1,4 @@
-package de.ecconia.mcserver.network.helper;
+package de.ecconia.mcserver.network.helper.reader;
 
 public interface Reader
 {

@@ -1,4 +1,4 @@
-package de.ecconia.mcserver.network;
+package de.ecconia.mcserver.network.handler;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -8,13 +8,15 @@ import java.util.UUID;
 import javax.crypto.SecretKey;
 
 import de.ecconia.mcserver.Core;
+import de.ecconia.mcserver.Player;
 import de.ecconia.mcserver.json.JSONNode;
 import de.ecconia.mcserver.json.JSONObject;
 import de.ecconia.mcserver.json.JSONParser;
-import de.ecconia.mcserver.network.helper.AsyncCryptTools;
+import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.helper.AuthServer;
-import de.ecconia.mcserver.network.helper.PacketBuilder;
-import de.ecconia.mcserver.network.helper.PacketReader;
+import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
+import de.ecconia.mcserver.network.helper.packet.PacketReader;
+import de.ecconia.mcserver.network.tools.encryption.AsyncCryptTools;
 
 public class LoginHandler implements Handler
 {
@@ -23,14 +25,16 @@ public class LoginHandler implements Handler
 	private final Core core;
 	private final ClientConnection cc;
 	private final byte[] validation = new byte[4];
+	private final HandshakeData data;
 	
 	private Stage stage;
 	private String username;
 	
-	public LoginHandler(Core core, ClientConnection cc)
+	public LoginHandler(Core core, ClientConnection cc, HandshakeData data)
 	{
 		this.cc = cc;
 		this.core = core;
+		this.data = data;
 		stage = Stage.Username;
 		//Create the validation token, for encryption:
 		random.nextBytes(validation);
@@ -60,30 +64,25 @@ public class LoginHandler implements Handler
 			}
 			
 			username = reader.readString();
+			cc.debug("username == " + username);
 			
 			if(reader.remaining() > 0)
 			{
 				cc.debug("WARNING: Login packet not fully read! Bytes: " + reader.toString());
 			}
 			
-			cc.debug("U-S-E-R-N-A-M-E: " + username);
-			if(!username.equals("Ecconia"))
-			{
-				disconnect("You can't join, cause someone told me: \"" + username + "\" is a noob!");
-			}
-			else
-			{
-				PacketBuilder builder = new PacketBuilder();
-				builder.addCInt(1); //Encryption request.
-				builder.addString(""); //Server code
-				byte[] pubkey = core.getKeyPair().getPublic().getEncoded();
-				builder.addCInt(pubkey.length);
-				builder.addBytes(pubkey);
-				builder.addCInt(validation.length);
-				builder.addBytes(validation);
-				cc.sendPacket(builder.asBytes());
-				stage = Stage.Encryption;
-			}
+			//TODO: Check if a player may join at this point by using handshake data and username.
+			
+			PacketBuilder builder = new PacketBuilder();
+			builder.addCInt(1); //Encryption request.
+			builder.addString(""); //Server code
+			byte[] pubkey = core.getKeyPair().getPublic().getEncoded();
+			builder.addCInt(pubkey.length);
+			builder.addBytes(pubkey);
+			builder.addCInt(validation.length);
+			builder.addBytes(validation);
+			cc.sendPacket(builder.asBytes());
+			stage = Stage.Encryption;
 		}
 		else if(id == 1)
 		{
@@ -97,26 +96,13 @@ public class LoginHandler implements Handler
 			byte[] validationResponse = reader.readBytes(reader.readCInt());
 			
 			byte[] decryptedValidationResponse = AsyncCryptTools.decrypt(core.getKeyPair().getPrivate(), validationResponse);
-			if(decryptedValidationResponse == null)
-			{
-				disconnect("Could decrypt your message (validation).");
-				return;
-			}
-			
-			boolean valid = Arrays.equals(validation, decryptedValidationResponse);
-			if(!valid)
+			if(!Arrays.equals(validation, decryptedValidationResponse))
 			{
 				disconnect("Encryption validation is not correct.");
 				return;
 			}
 			
 			byte[] decryptedSharedKeyBytes = AsyncCryptTools.decrypt(core.getKeyPair().getPrivate(), sharedKeyBytes);
-			if(decryptedSharedKeyBytes == null)
-			{
-				disconnect("Could decrypt your message.");
-				return;
-			}
-			
 			SecretKey sharedKey = AsyncCryptTools.secredKeyFromBytes(decryptedSharedKeyBytes);
 			
 			//TBI: Enable encrytion now? Will the future error message be decrypted on the client side?
@@ -127,7 +113,13 @@ public class LoginHandler implements Handler
 			//Yeeee nice! At this point we got the UUID! Lets not care further :P
 			//TODO: Use this information!
 			//It should be validated for sure. Cause else network attacks are possible.
-			String json = AuthServer.hasJoin(username, serverHash, cc.getConnectingIP());
+			String json = AuthServer.hasJoin(username, serverHash, cc.getRemoteIP());
+			if(json.isEmpty())
+			{
+				disconnect("Auth server did not approve your login, no details.");
+				return;
+			}
+			
 			JSONNode node = JSONParser.parse(json);
 			if(node instanceof JSONObject)
 			{
@@ -139,22 +131,23 @@ public class LoginHandler implements Handler
 					UUID uuid = fixUUID(stringUUID);
 					String name = (String) entries.get("name");
 					
+					Player player = new Player(core, cc, data.getTargetVersion(), data.getTargetDomain(), data.getTargetPort(), uuid, name);
+					
 					//Send compression packet:
-					//TODO: Enable and support compression!
-//					PacketBuilder pb = new PacketBuilder();
-//					pb.addCInt(3);
-//					pb.addCInt(1024);
-//					cc.sendPacket(pb.asBytes());
+					PacketBuilder pb = new PacketBuilder();
+					pb.addCInt(3);
+					pb.addCInt(1024);
+					cc.sendPacket(pb.asBytes());
+					cc.enableCompression(1024);
 					
 					//Set join allow:
-					PacketBuilder pb = new PacketBuilder();
+					pb = new PacketBuilder();
 					pb.addCInt(2);
 					pb.addString(uuid.toString());
 					pb.addString(name);
 					cc.sendPacket(pb.asBytes());
-					//TODO: Yay we got to this point, lets request compression.
 					
-					cc.setHandler(new GameHandler(core, cc));
+					cc.setHandler(new GameHandler(core, cc, player));
 				}
 				else
 				{
@@ -168,7 +161,7 @@ public class LoginHandler implements Handler
 		}
 		else
 		{
-			cc.debug("[LH] [WARNING] Unknown ID: " + id);
+			cc.debug("[LH] [WARNING] Unknown ID " + id + " Data: " + reader.toString());
 			cc.close();
 		}
 	}
@@ -186,6 +179,6 @@ public class LoginHandler implements Handler
 		cc.debug("Disconnecting: " + message);
 		pb.addString("{\"text\":\"" + message.replace("\"", "\\\"") + "\",\"color\":\"red\"}");
 		cc.sendPacket(pb.asBytes());
-		cc.close();
+		cc.sendAndClose();
 	}
 }

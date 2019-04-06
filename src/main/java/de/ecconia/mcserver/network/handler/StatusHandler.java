@@ -1,4 +1,4 @@
-package de.ecconia.mcserver.network;
+package de.ecconia.mcserver.network.handler;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -9,20 +9,24 @@ import java.util.Base64;
 import javax.imageio.ImageIO;
 
 import de.ecconia.mcserver.Core;
+import de.ecconia.mcserver.Logger;
+import de.ecconia.mcserver.json.JSONArray;
 import de.ecconia.mcserver.json.JSONObject;
-import de.ecconia.mcserver.network.helper.PacketBuilder;
-import de.ecconia.mcserver.network.helper.PacketReader;
+import de.ecconia.mcserver.network.ClientConnection;
+import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
+import de.ecconia.mcserver.network.helper.packet.PacketReader;
 
 public class StatusHandler implements Handler
 {
-	@SuppressWarnings("unused")
-	private final Core core; //TODO: "use" -> Get the information for the server ping from there.
+	private final Core core;
 	private final ClientConnection cc;
+	private final HandshakeData data;
 	
-	public StatusHandler(Core core, ClientConnection cc)
+	public StatusHandler(Core core, ClientConnection cc, HandshakeData data)
 	{
 		this.cc = cc;
 		this.core = core;
+		this.data = data;
 	}
 	
 	@Override
@@ -47,15 +51,15 @@ public class StatusHandler implements Handler
 			root.put("version", version);
 			
 			//Players section:
-//			JSONObject players = new JSONObject();
-//			players.put("online", 0);
-//			players.put("max", 0);
-//			players.put("sample", new JSONArray());
-//			root.put("players", players);
+			JSONObject players = new JSONObject();
+			players.put("online", core.getOnlineCount());
+			players.put("max", -1);
+			players.put("sample", new JSONArray());
+			root.put("players", players);
 			
 			//Description:
 			JSONObject description = new JSONObject();
-			description.put("text", "Ecconia's Custom Server 1.13.2");
+			description.put("text", "Ecconia's Custom Server 1.13.2\n" + (data.getTargetVersion() != 404 ? "Please only connect with version 1.13.2 else boom." : ""));
 			root.put("description", description);
 			
 			//Favicon:
@@ -75,7 +79,7 @@ public class StatusHandler implements Handler
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+				Logger.warning("Could not create favicon.", e);
 			}
 			
 			String json = root.printJSON();
@@ -97,7 +101,7 @@ public class StatusHandler implements Handler
 		}
 		else
 		{
-			cc.debug("[SH] [WARNING] Unknown ID: " + id);
+			cc.debug("[SH] [WARNING] Unknown ID " + id + " Data: " + reader.toString());
 			cc.close();
 		}
 	}

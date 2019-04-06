@@ -1,4 +1,4 @@
-package de.ecconia.mcserver.network.helper;
+package de.ecconia.mcserver.network.helper.packet;
 
 import java.util.UUID;
 
@@ -18,11 +18,6 @@ public class PacketReader
 	}
 	
 	private int next()
-	{
-		return data[offset++] & 255;
-	}
-	
-	private int nextUnsigned()
 	{
 		return data[offset++] & 255;
 	}
@@ -53,7 +48,7 @@ public class PacketReader
 	{
 		int i = next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		return i;
 	}
 	
@@ -61,32 +56,32 @@ public class PacketReader
 	{
 		int i = next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		
 		return i;
 	}
 	
 	public long readLong()
 	{
-		long i = nextUnsigned();
+		long i = next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		i = i << 8;
-		i += nextUnsigned();
+		i += next();
 		
 		return i;
 	}
@@ -131,7 +126,7 @@ public class PacketReader
 	
 	public int readUByte()
 	{
-		return nextUnsigned();
+		return next();
 	}
 	
 	public UUID readUUID()

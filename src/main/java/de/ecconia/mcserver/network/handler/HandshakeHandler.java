@@ -1,7 +1,8 @@
-package de.ecconia.mcserver.network;
+package de.ecconia.mcserver.network.handler;
 
 import de.ecconia.mcserver.Core;
-import de.ecconia.mcserver.network.helper.PacketReader;
+import de.ecconia.mcserver.network.ClientConnection;
+import de.ecconia.mcserver.network.helper.packet.PacketReader;
 
 public class HandshakeHandler implements Handler
 {
@@ -27,19 +28,22 @@ public class HandshakeHandler implements Handler
 			int port = reader.readShort();
 			int target = reader.readCInt();
 			
-			cc.debug(" HL: Received Handshake: " + domain + ":" + port + " c-version " + version);
+			//TODO: Handle BungeeCord requests.
+			
+			HandshakeData data = new HandshakeData(version, domain, port);
+			cc.debug("[HH] Received Handshake: " + data);
 			
 			if(target == 1)
 			{
-				cc.setHandler(new StatusHandler(core, cc));
+				cc.setHandler(new StatusHandler(core, cc, data));
 			}
 			else if(target == 2)
 			{
-				cc.setHandler(new LoginHandler(core, cc));
+				cc.setHandler(new LoginHandler(core, cc, data));
 			}
 			else
 			{
-				cc.debug(" HL: Unknown request: " + target);
+				cc.debug("[HH] Unknown request: " + target);
 				cc.close();
 			}
 			
@@ -50,7 +54,7 @@ public class HandshakeHandler implements Handler
 		}
 		else
 		{
-			cc.debug(" HL: Unknown ID " + id + " in Handshake stage. Data: " + reader.toString());
+			cc.debug("[HH] [WARNING] Unknown ID " + id + " Data: " + reader.toString());
 			cc.close();
 		}
 	}

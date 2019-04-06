@@ -1,4 +1,4 @@
-package de.ecconia.mcserver.network;
+package de.ecconia.mcserver.network.handler;
 
 public interface Handler
 {

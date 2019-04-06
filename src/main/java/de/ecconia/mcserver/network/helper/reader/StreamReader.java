@@ -1,14 +1,14 @@
-package de.ecconia.mcserver.network.helper;
+package de.ecconia.mcserver.network.helper.reader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 
-public class StreamWrapper implements Reader
+public class StreamReader implements Reader
 {
 	private final InputStream is;
 	
-	public StreamWrapper(InputStream is)
+	public StreamReader(InputStream is)
 	{
 		this.is = is;
 	}
