@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.ecconia.mcserver.json.JSONObject;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
 import de.ecconia.mcserver.network.tools.encryption.AsyncCryptTools;
 
@@ -197,7 +198,12 @@ public class Core
 	{
 		PacketBuilder builder = new PacketBuilder();
 		builder.addCInt(0x0E); //Chat Packet
-		builder.addString("{\"text\":\"" + message + "\",\"color\":\"white\"}"); //JSON chat message
+		
+		JSONObject json = new JSONObject();
+		json.put("text", message);
+		json.put("color", "white");
+		
+		builder.addString(json.printJSON());
 		builder.addByte(0);
 		byte[] bytes = builder.asBytes();
 		

@@ -8,12 +8,14 @@ import de.ecconia.mcserver.network.helper.packet.PacketReader;
 public class GameHandler implements Handler
 {
 	private final Core core;
+	private final Player player;
 	private final ClientConnection cc;
 	
 	public GameHandler(Core core, ClientConnection cc, Player player)
 	{
 		this.cc = cc;
 		this.core = core;
+		this.player = player;
 		
 		core.playerJoinedGame(player);
 	}
@@ -32,7 +34,7 @@ public class GameHandler implements Handler
 		case 0x02:
 			String message = reader.readString();
 			cc.debug("[GH] Packet: Chat message: >" + message + "<");
-			core.chat(message);
+			core.chat(player.getUsername() + ": " + message);
 			break;
 		case 0x04:
 			cc.debug("[GH] Packet: Client Settings");

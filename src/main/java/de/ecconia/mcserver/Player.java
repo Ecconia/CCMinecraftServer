@@ -45,4 +45,9 @@ public class Player
 	{
 		return connection;
 	}
+
+	public String getUsername()
+	{
+		return username;
+	}
 }
