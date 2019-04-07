@@ -2,7 +2,9 @@ package de.ecconia.mcserver.network.handler;
 
 import de.ecconia.mcserver.Core;
 import de.ecconia.mcserver.Player;
+import de.ecconia.mcserver.json.JSONObject;
 import de.ecconia.mcserver.network.ClientConnection;
+import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
 import de.ecconia.mcserver.network.helper.packet.PacketReader;
 
 public class GameHandler implements Handler
@@ -34,7 +36,11 @@ public class GameHandler implements Handler
 		case 0x02:
 			String message = reader.readString();
 			cc.debug("[GH] Packet: Chat message: >" + message + "<");
-			core.chat(player.getUsername() + ": " + message, "white");
+			core.broadcast(player.getUsername() + ": " + message, "white");
+			if(message.equals("quit"))
+			{
+				disconnect("You requested to quit.");
+			}
 			break;
 		case 0x03:
 			cc.debug("[GH] Packet: Client action");
@@ -84,8 +90,23 @@ public class GameHandler implements Handler
 		case 0x29:
 			cc.debug("[GH] Packet: Block Place");
 			break;
+		case 0x2A:
+			cc.debug("[GH] Packet: Use Item");
+			break;
 		default:
 			cc.debug("[GH] [WARNING] Unknown ID 0x" + Integer.toHexString(id) + " Data: " + reader.toString());
 		}
+	}
+	
+	private void disconnect(String message)
+	{
+		PacketBuilder pb = new PacketBuilder();
+		pb.addCInt(0x1B); //Disconnect ID
+		cc.debug("Disconnecting: " + message);
+		JSONObject json = new JSONObject();
+		json.put("text", message);
+		json.put("color", "red");
+		pb.addString(json.printJSON());
+		cc.sendAndClose(pb.asBytes());
 	}
 }

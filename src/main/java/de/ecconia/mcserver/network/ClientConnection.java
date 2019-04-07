@@ -6,6 +6,8 @@ import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
@@ -25,31 +27,46 @@ import de.ecconia.mcserver.network.tools.compression.Compressor;
 import de.ecconia.mcserver.network.tools.encryption.CipherException;
 import de.ecconia.mcserver.network.tools.encryption.SyncCryptUnit;
 
-public class ClientConnection
+public class ClientConnection implements PacketSender
 {
+	//Each connection gets one id:
 	private static int clientID = 1;
-	private OutputStream os;
 	
+	//Constant data for this connection: 
 	private final Socket socket;
+	private final Core core;
 	private final int id;
 	
+	private OutputStream os;
+	private Thread readingThread;
+	private boolean sendingThreadMayRun = true;
+	private Thread sendingThread;
+	
+	//Decoding/Encoding packets:
 	private SyncCryptUnit crypter;
 	private Compressor compressor;
 	private Reader reader;
 	
+	//Incomming packet processing unit:
 	private Handler handler;
+	private List<Thread> threadsToClose = new ArrayList<>();
+	private Thread waitingThread;
+	private Object majicWaitingLock = new Object();
 	
-	private boolean shouldDie;
+	//Error/Close handling:
+	private boolean isClosing;
 	
+	//Outgoing packet buffer (threadsafe):
 	private final BlockingQueue<byte[]> sendingQueue = new LinkedBlockingQueue<>();
 	
 	public ClientConnection(Core core, Socket socket)
 	{
+		this.core = core;
 		this.socket = socket;
 		this.id = clientID++;
 		//TODO: Only do this, once the "connection" wants to join the server (and has been validated).
 		
-		debug("== " + getRemoteIP() + ':' + getRemotePort() + " -> [" + core.getIps().getForIP(getRemoteIP()).stream().collect(Collectors.joining(", ")) + "]");
+		debug("<<= " + getRemoteIP() + ':' + getRemotePort() + " -> [" + core.getIps().getForIP(getRemoteIP()).stream().collect(Collectors.joining(", ")) + "]");
 		setHandler(new HandshakeHandler(this, core));
 		
 		try
@@ -59,168 +76,161 @@ public class ClientConnection
 		}
 		catch(IOException e)
 		{
-			debug("Could not open IO streams: " + e.getMessage());
+			Logger.error("Could not open IO streams.", e);
 			return;
 		}
 		
-		Thread readingThread = new Thread(() -> {
+		//Reading Thread:
+		
+		readingThread = new Thread(() -> {
 			try
 			{
-				//Read the first byte before the normal reading in the loop.
-				//It may be the legacy ping indicator.
-				int firstByte = reader.readByte();
-				if(firstByte == -1)
-				{
-					//Connection broken.
-					throw new DisconnectException();
-				}
-				
-				if(firstByte == 254)
-				{
-					debug("aborted. Detected legacy ping packet, abort this connection.");
-					try
-					{
-						socket.close();
-					}
-					catch(IOException e)
-					{
-						throw new UncheckedIOException(e);
-					}
-					return;
-				}
-				
-				int packetSize = readCInt((byte) firstByte);
-				byte[] packet = reader.readBytes(packetSize);
-				handler.handlePacket(packet);
+				readFirstPacket();
 				
 				while(true)
 				{
-					packetSize = readCInt();
-					packet = reader.readBytes(packetSize);
-					handler.handlePacket(packet);
+					readPacket();
 				}
 			}
 			catch(Exception e)
 			{
-				if(e instanceof DisconnectException)
+				if(!isClosing)
 				{
-					debug("Client broke connection.");
-				}
-				else if(e instanceof CipherException)
-				{
-					debug("Could not create cipher.");
-				}
-				else if(e instanceof UncheckedIOException)
-				{
-					IOException ioe = (IOException) e.getCause();
+					close();
 					
-					if(ioe instanceof SocketException)
+					if(e instanceof DisconnectException)
 					{
-						String message = ioe.getMessage();
-						//TBI: What is "reset" even. (Caused in SocketInputStream#)
-						if("Connection reset".equals(message))
+						//Expected and properly handled by doing nothing!
+						//Logger.error("Client broke connection.");
+					}
+					else if(e instanceof CipherException)
+					{
+						Logger.error("Could not create cipher.");
+					}
+					else if(e instanceof UncheckedIOException)
+					{
+						IOException ioe = (IOException) e.getCause();
+						
+						if(ioe instanceof SocketException)
 						{
-							debug("Client resetted connection.");
-						}
-						else if("Socket closed".equals(message))
-						{
-							debug("Socket has been closed internally.");
+							String message = ioe.getMessage();
+							//TBI: What is "reset" even. (Caused in SocketInputStream#)
+							if("Connection reset".equals(message))
+							{
+								Logger.error("Client resetted connection.");
+							}
+							else if("Socket closed".equals(message))
+							{
+								Logger.error("Socket has been closed internally.");
+							}
+							else
+							{
+								Logger.error("Unexpected SocketException (while reading):");
+								ioe.printStackTrace(System.out);
+							}
 						}
 						else
 						{
-							System.out.println("Unexpected SocketException (while reading):");
+							Logger.error("Unexpected IOException (while reading):");
 							ioe.printStackTrace(System.out);
 						}
 					}
 					else
 					{
-						System.out.println("Unexpected IOException (while reading):");
-						ioe.printStackTrace(System.out);
+						Logger.error("Unexpected exception (while reading):");
+						e.printStackTrace(System.out);
 					}
 				}
-				else
-				{
-					System.out.println("Unexpected exception (while reading):");
-					e.printStackTrace(System.out);
-				}
-				
-				close();
 			}
 		}, "ReadingThread");
 		readingThread.setUncaughtExceptionHandler((t, e) -> {
-			Logger.warning("Oops some exception slipped the catch on the reading thread. That should never happen!!");
+			Logger.error(id + " R> Oops some exception slipped the catch on the reading thread. That should never happen!!");
 			e.printStackTrace(System.out);
 			close();
 		});
 		readingThread.start();
 		
-		Thread sendingThread = new Thread(() -> {
+		//Sending Thread:
+		
+		sendingThread = new Thread(() -> {
 			try
 			{
-				while(true)
+				while(sendingThreadMayRun)
 				{
-					byte[] packet = sendingQueue.take();
-					
-					if(compressor != null)
+					try
 					{
-						//Compress packet
-						Compressor.IntBytes ret = compressor.compress(packet);
-						//Prepend original size, or 0
-						packet = prependCInt(ret.getBytes(), ret.getInt());
+						//Lets capture and ignore interrupt exceptions, they will cause the system to trigger the stuff behind the getter.
+						flushPacket(sendingQueue.take());
+					}
+					catch(InterruptedException e)
+					{
+						//Don't do anything, this interruption was intentional.
 					}
 					
-					//Prepend size
-					packet = prependCInt(packet, packet.length);
-					
-					if(crypter != null)
+					if(waitingThread != null)
 					{
-						packet = crypter.encryptBytes(packet);
-					}
-					
-					//Send packet
-					os.write(packet);
-					os.flush();
-					
-					if(shouldDie)
-					{
-						//At this point check if the sendQueue is empty, if so kill this socket.
-						if(sendingQueue.isEmpty())
+						synchronized(majicWaitingLock)
 						{
-							close();
+							if(sendingQueue.isEmpty())
+							{
+								majicWaitingLock.notify();
+								waitingThread = null;
+							}
 						}
 					}
 				}
+				
+				debug("Sending thread shutted down.");
 			}
 			catch(Exception e)
 			{
-				if(e instanceof SocketException)
+				if(!isClosing)
 				{
-					String message = e.getMessage();
-					if("Socket closed".equals(message))
+					close();
+					
+					if(e instanceof SocketException)
 					{
-						debug("Socket has been closed internally.");
+						String message = e.getMessage();
+						if("Socket closed".equals(message))
+						{
+							Logger.error("Socket has been closed internally.");
+						}
+						else if("Broken pipe (Write failed)".equals(message))
+						{
+							//Client closed connection while sending.
+							//Do nothing, just close.
+							debug("Client closed connection, while sending (broken pipe).");
+						}
+						else if("Connection reset".equals(message))
+						{
+							//Client closed connection while sending.
+							//Do nothing, just close.
+							debug("Client closed connection, while sending (reset).");
+						}
+						else
+						{
+							Logger.error(id + " Unexpected SocketException (while sending):");
+							e.printStackTrace(System.out);
+						}
 					}
 					else
 					{
-						System.out.println("Unexpected SocketException (while sending):");
+						Logger.error(id + " Unexpected exception (while sending):");
 						e.printStackTrace(System.out);
 					}
 				}
-				else
-				{
-					System.out.println("Unexpected exception (while sending):");
-					e.printStackTrace(System.out);
-				}
-				
-				close();
 			}
 		}, "SendingThread");
 		sendingThread.setUncaughtExceptionHandler((t, e) -> {
-			debug("S> " + e.getClass().getSimpleName() + (e.getMessage() != null ? " " + e.getMessage() : ""));
 			close();
+			
+			Logger.error(id + " S> Oops some exception slipped the catch on the reading thread. That should never happen!!");
+			e.printStackTrace(System.out);
 		});
 		sendingThread.start();
 	}
+	
+	//Internal methods:
 	
 	public static byte[] prependCInt(byte[] bytes, int i)
 	{
@@ -286,20 +296,76 @@ public class ClientConnection
 		return value;
 	}
 	
+	//Internal read/send methods:
+	
+	private void readFirstPacket()
+	{
+		//Read the first byte before the normal reading in the loop.
+		//It may be the legacy ping indicator.
+		int firstByte = reader.readByte();
+		if(firstByte == -1)
+		{
+			//Connection broken.
+			throw new DisconnectException();
+		}
+		
+		if(firstByte == 254)
+		{
+			debug("aborted. Detected legacy ping packet, abort this connection.");
+			close();
+			return;
+		}
+		
+		int packetSize = readCInt((byte) firstByte);
+		byte[] packet = reader.readBytes(packetSize);
+		handler.handlePacket(packet);
+	}
+	
+	private void readPacket()
+	{
+		int packetSize = readCInt();
+		byte[] packet = reader.readBytes(packetSize);
+		handler.handlePacket(packet);
+	}
+	
+	private void flushPacket(byte[] packet) throws IOException
+	{
+//		PacketReader reader = new PacketReader(packet);
+//		System.out.println(id + " Sending ID: 0x" + Integer.toHexString(reader.readCInt()) + " [" + reader.toString() + "]");
+		
+		if(compressor != null)
+		{
+			//Compress packet
+			Compressor.IntBytes ret = compressor.compress(packet);
+			//Prepend original size, or 0
+			packet = prependCInt(ret.getBytes(), ret.getInt());
+		}
+		
+		//Prepend size
+		packet = prependCInt(packet, packet.length);
+		
+		if(crypter != null)
+		{
+			packet = crypter.encryptBytes(packet);
+		}
+		
+		//Send packet
+		os.write(packet);
+		os.flush();
+	}
+	
 	//API setter/methods:
 	
+	@Override
 	public void sendPacket(byte[] packet)
 	{
-		if(!shouldDie)
+		try
 		{
-			try
-			{
-				sendingQueue.put(packet);
-			}
-			catch(InterruptedException e)
-			{
-				e.printStackTrace(System.out);
-			}
+			sendingQueue.put(packet);
+		}
+		catch(InterruptedException e)
+		{
+			Logger.error("Interrupted while inserting packet to queue.", e);
 		}
 	}
 	
@@ -316,6 +382,15 @@ public class ClientConnection
 	
 	public void close()
 	{
+		Logger.debug("Connection " + id + " is closing now.");
+		isClosing = true;
+		core.dump(id);
+		
+		for(Thread t : threadsToClose)
+		{
+			t.interrupt();
+		}
+		
 		try
 		{
 			socket.close();
@@ -324,6 +399,54 @@ public class ClientConnection
 		{
 			debug("Issue closing the socket:");
 			e.printStackTrace(System.out);
+		}
+	}
+	
+	public void sendAndClose(byte[] lastPacket)
+	{
+		//Close the sending thread:
+		sendingThreadMayRun = false;
+		sendingThread.interrupt();
+		
+		try
+		{
+			//Wait for the sending thread to be off.
+			sendingThread.join();
+			flushPacket(lastPacket);
+		}
+		catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		close();
+	}
+	
+	public void addThread(Thread thread)
+	{
+		threadsToClose.add(thread);
+	}
+	
+	public void waitUntilQueueEmpty()
+	{
+		waitingThread = Thread.currentThread();
+		
+		try
+		{
+			synchronized(majicWaitingLock)
+			{
+				//TBI: How to ensure that this works? Its experimental rn.
+				sendingThread.interrupt();
+				majicWaitingLock.wait();
+			}
+		}
+		catch(InterruptedException e)
+		{
+			Logger.error("Interrupt error while waiting for sendqueue to be empty.", e);
 		}
 	}
 	
@@ -358,8 +481,9 @@ public class ClientConnection
 		return !socket.isClosed();
 	}
 	
-	public void sendAndClose()
+	public int getID()
 	{
-		shouldDie = true;
+		return id;
 	}
+	
 }

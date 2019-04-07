@@ -134,11 +134,15 @@ public class LoginHandler implements Handler
 					Player player = new Player(core, cc, data.getTargetVersion(), data.getTargetDomain(), data.getTargetPort(), uuid, name);
 					
 					//Send compression packet:
+					int compression = 256;
 					PacketBuilder pb = new PacketBuilder();
 					pb.addCInt(3);
-					pb.addCInt(1024);
+					pb.addCInt(compression);
 					cc.sendPacket(pb.asBytes());
-					cc.enableCompression(1024);
+					
+					cc.waitUntilQueueEmpty();
+					
+					cc.enableCompression(compression);
 					
 					//Set join allow:
 					pb = new PacketBuilder();
@@ -178,7 +182,6 @@ public class LoginHandler implements Handler
 		pb.addCInt(0); //Disconnect ID
 		cc.debug("Disconnecting: " + message);
 		pb.addString("{\"text\":\"" + message.replace("\"", "\\\"") + "\",\"color\":\"red\"}");
-		cc.sendPacket(pb.asBytes());
-		cc.sendAndClose();
+		cc.sendAndClose(pb.asBytes());
 	}
 }

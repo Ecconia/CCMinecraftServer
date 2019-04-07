@@ -1,18 +1,17 @@
 package de.ecconia.mcserver;
 
 import java.security.KeyPair;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.ecconia.mcserver.json.JSONObject;
+import de.ecconia.mcserver.network.helper.SendHelper;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
 import de.ecconia.mcserver.network.tools.encryption.AsyncCryptTools;
 
 public class Core
 {
-	private final List<Player> players = new ArrayList<>();
-	
 	private final KeyPair keyPair;
 	private final IPLogger ips;
 	
@@ -35,60 +34,38 @@ public class Core
 			}).start();
 		}
 		
-		players.add(player);
+		register(player, player.getConnection().getID());
 		
 		//Ping thread to keep the connection alive. Should ping every 5 seconds.
-		new Thread(() -> {
-			while(player.isConnected())
+		Thread pingThread = new Thread(() -> {
+			try
 			{
-				PacketBuilder builder = new PacketBuilder();
-				builder.addCInt(0x21);
-				builder.addLong(0); //ID of this ping.
-				player.sendPacket(builder.asBytes());
-				
-				try
+				while(!Thread.currentThread().isInterrupted())
 				{
+					SendHelper.sendPing(player, 0);
 					Thread.sleep(5000);
 				}
-				catch(InterruptedException e)
-				{
-					e.printStackTrace(System.out);
-				}
+			}
+			catch(InterruptedException e)
+			{
+				//Called intentional.
 			}
 			
-			chat(player.getUsername() + " left in the last 5 seconds.", "yellow");
 			player.getConnection().debug("Shutting down ping thread.");
-		}, "Ping thread for ?").start();
+		}, "Ping thread for " + player.getUsername());
+		player.getConnection().addThread(pingThread);
+		pingThread.start();
 		
-		PacketBuilder builder = new PacketBuilder();
-		builder.addCInt(0x0E); //Chat Packet
-		builder.addString("{\"text\":\"Welcome to this custom server, hope ya'll like what ya see!\",\"color\":\"yellow\"}"); //JSON chat message
-		builder.addByte(0);
-		player.sendPacket(builder.asBytes());
+		JSONObject json = new JSONObject();
+		json.put("text", "Welcome to this custom server, hope ya'll like what ya see!");
+		json.put("color", "yellow");
+		SendHelper.sendChat(player, json.printJSON(), SendHelper.chatBox);
 		
-		chat(player.getUsername() + " joined this test-server.", "yellow");
+		broadcast(player.getUsername() + " joined this test-server.", "yellow");
 		
-		builder = new PacketBuilder();
-		builder.addCInt(0x25); //Join game packet
-		builder.addInt(0); //Entity ID
-		builder.addByte(1); //Creative
-		builder.addInt(0); // Overworld
-		builder.addByte(0); //Peaceful
-		builder.addByte(0); //Max players (useless)
-		builder.addString("default"); //Why.... (level type)
-		builder.addBoolean(false); //Reduced debug info
-		player.sendPacket(builder.asBytes());
-		
-		builder = new PacketBuilder();
-		builder.addCInt(0x32); //Player position and look
-		builder.addDouble(0); //X
-		builder.addDouble(64); //Y
-		builder.addDouble(0); //Z
-		builder.addFloat(0); //Yaw (Rotation)
-		builder.addFloat(0); //Pitch (Neck)
-		builder.addByte(0); //All absolute
-		builder.addCInt(0); //Teleport ID
-		player.sendPacket(builder.asBytes());
+		//Creative + Overworld + Peaceful
+		SendHelper.sendJoinGame(player, 0, 1, 0, 0, 0, "default", false);
+		SendHelper.sendPositionAndLook(player, 0, 64, 0, 0, 0, (byte) 0, 0);
 		
 		for(int x = 0; x < 16; x++)
 		{
@@ -120,7 +97,7 @@ public class Core
 		{
 			for(int zi = 0; zi < 16; zi++)
 			{
-				subChunk[xi][zi][0] = block++; 
+				subChunk[xi][zi][0] = block++;
 			}
 		}
 		long[] longs = createLongsFromBlockArray(subChunk, bitsPerBlock);
@@ -211,22 +188,33 @@ public class Core
 		return 0;
 	}
 	
-	public void chat(String message, String color)
+	public void broadcast(String message, String color)
 	{
-		PacketBuilder builder = new PacketBuilder();
-		builder.addCInt(0x0E); //Chat Packet
-		
 		JSONObject json = new JSONObject();
 		json.put("text", message);
 		json.put("color", color);
 		
-		builder.addString(json.printJSON());
-		builder.addByte(0);
-		byte[] bytes = builder.asBytes();
-		
-		for(Player player : players)
+		for(Player player : players.values())
 		{
-			player.sendPacket(bytes);
+			SendHelper.sendChat(player, json.printJSON(), SendHelper.chatBox);
+		}
+	}
+	
+	//Online players:
+	
+	private final Map<Integer, Player> players = new HashMap<>();
+	
+	public void register(Player player, int id)
+	{
+		players.put(id, player);
+	}
+	
+	public void dump(int id)
+	{
+		Player player = players.remove(id);
+		if(player != null)
+		{
+			broadcast(player.getUsername() + " left.", "yellow");
 		}
 	}
 }

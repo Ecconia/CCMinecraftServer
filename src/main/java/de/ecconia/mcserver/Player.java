@@ -3,8 +3,9 @@ package de.ecconia.mcserver;
 import java.util.UUID;
 
 import de.ecconia.mcserver.network.ClientConnection;
+import de.ecconia.mcserver.network.PacketSender;
 
-public class Player
+public class Player implements PacketSender
 {
 	//The core in charge:
 	private final Core core;
@@ -31,6 +32,7 @@ public class Player
 		this.username = username;
 	}
 	
+	@Override
 	public void sendPacket(byte[] data)
 	{
 		connection.sendPacket(data);
