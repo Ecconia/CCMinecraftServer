@@ -18,30 +18,15 @@ public class AuthServer
 		{
 			String response = request(link);
 			
+			//TBI: For safety print the json here for everyone.
+			//TODO: Validate and only print if invalid, read documentation.
 			System.out.println(response);
 			
 			return response;
-			
-//			if(!response.isEmpty())
-//			{
-//				if(response.equals("{\"error\":\"ForbiddenOperationException\",\"errorMessage\":\"Invalid token\"}"))
-//				{
-//					//TODO: Update somehow, this is no good solution, will do until the login process is this derpy.
-//					System.err.println("Invalid access token, please update!");
-//					System.err.println("Terminating!");
-//					System.exit(0);
-//				}
-//				else
-//				{
-//					System.out.println("Auth server send something on join attempt: " + response);
-//					System.out.println("Thats probably an error, termination incomming.");
-//					throw new FatalException("Auth server couldn't shut up.");
-//				}
-//			}
 		}
 		catch(UnknownHostException e)
 		{
-			throw new FatalException("Could not connect to auth server. Online?");
+			throw new RuntimeException("Could not connect to auth server. Online?");
 		}
 	}
 	

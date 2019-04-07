@@ -34,7 +34,10 @@ public class GameHandler implements Handler
 		case 0x02:
 			String message = reader.readString();
 			cc.debug("[GH] Packet: Chat message: >" + message + "<");
-			core.chat(player.getUsername() + ": " + message);
+			core.chat(player.getUsername() + ": " + message, "white");
+			break;
+		case 0x03:
+			cc.debug("[GH] Packet: Client action");
 			break;
 		case 0x04:
 			cc.debug("[GH] Packet: Client Settings");
@@ -65,6 +68,9 @@ public class GameHandler implements Handler
 			break;
 		case 0x19:
 			cc.debug("[GH] Packet: Entity action");
+			break;
+		case 0x1E:
+			cc.debug("[GH] Packet: Advancement tab");
 			break;
 		case 0x21:
 			cc.debug("[GH] Packet: Hand item change");
