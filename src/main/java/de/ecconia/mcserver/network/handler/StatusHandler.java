@@ -58,8 +58,22 @@ public class StatusHandler implements Handler
 			root.put("players", players);
 			
 			//Description:
+			String otherLine = "Please join! Now!";
+			if(data.getTargetVersion() != 404)
+			{
+				otherLine = "Please only connect with version 1.13.2 else boom.";
+			}
+			else
+			{
+				String lastName = core.getIps().getLatestForIP(cc.getRemoteIP());
+				if(lastName != null)
+				{
+					otherLine = "Hi, " + lastName + ".";
+				}
+			}
+			
 			JSONObject description = new JSONObject();
-			description.put("text", "Ecconia's Custom Server 1.13.2\n" + (data.getTargetVersion() != 404 ? "Please only connect with version 1.13.2 else boom." : ""));
+			description.put("text", "Ecconia's Custom Server 1.13.2\n" + otherLine);
 			root.put("description", description);
 			
 			//Favicon:

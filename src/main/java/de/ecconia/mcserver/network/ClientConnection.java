@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
@@ -48,7 +49,7 @@ public class ClientConnection
 		this.id = clientID++;
 		//TODO: Only do this, once the "connection" wants to join the server (and has been validated).
 		
-		debug("== " + getRemoteIP() + ':' + getRemotePort());
+		debug("== " + getRemoteIP() + ':' + getRemotePort() + " -> [" + core.getIps().getForIP(getRemoteIP()).stream().collect(Collectors.joining(", ")) + "]");
 		setHandler(new HandshakeHandler(this, core));
 		
 		try

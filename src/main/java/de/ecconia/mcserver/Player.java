@@ -50,4 +50,9 @@ public class Player
 	{
 		return username;
 	}
+
+	public UUID getUUID()
+	{
+		return uuid;
+	}
 }

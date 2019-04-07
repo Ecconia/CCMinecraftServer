@@ -14,9 +14,11 @@ public class Core
 	private final List<Player> players = new ArrayList<>();
 	
 	private final KeyPair keyPair;
+	private final IPLogger ips;
 	
 	public Core()
 	{
+		ips = new IPLogger();
 		keyPair = AsyncCryptTools.generateKeyPair();
 	}
 	
@@ -27,6 +29,12 @@ public class Core
 	
 	public void playerJoinedGame(Player player)
 	{
+		{
+			new Thread(() -> {
+				ips.addEntry(player.getUUID(), player.getUsername(), player.getConnection().getRemoteIP());
+			}).start();
+		}
+		
 		players.add(player);
 		
 		//Ping thread to keep the connection alive. Should ping every 5 seconds.
@@ -47,10 +55,20 @@ public class Core
 					e.printStackTrace(System.out);
 				}
 			}
+			
+			chat(player.getUsername() + " left in the last 5 seconds.", "yellow");
 			player.getConnection().debug("Shutting down ping thread.");
 		}, "Ping thread for ?").start();
 		
 		PacketBuilder builder = new PacketBuilder();
+		builder.addCInt(0x0E); //Chat Packet
+		builder.addString("{\"text\":\"Welcome to this custom server, hope ya'll like what ya see!\",\"color\":\"yellow\"}"); //JSON chat message
+		builder.addByte(0);
+		player.sendPacket(builder.asBytes());
+		
+		chat(player.getUsername() + " joined this test-server.", "yellow");
+		
+		builder = new PacketBuilder();
 		builder.addCInt(0x25); //Join game packet
 		builder.addInt(0); //Entity ID
 		builder.addByte(1); //Creative
@@ -70,12 +88,6 @@ public class Core
 		builder.addFloat(0); //Pitch (Neck)
 		builder.addByte(0); //All absolute
 		builder.addCInt(0); //Teleport ID
-		player.sendPacket(builder.asBytes());
-		
-		builder = new PacketBuilder();
-		builder.addCInt(0x0E); //Chat Packet
-		builder.addString("{\"text\":\"Welcome to this custom server, hope ya'll like what ya see!\",\"color\":\"yellow\"}"); //JSON chat message
-		builder.addByte(0);
 		player.sendPacket(builder.asBytes());
 		
 		for(int x = 0; x < 16; x++)
@@ -189,19 +201,24 @@ public class Core
 		return longs;
 	}
 	
+	public IPLogger getIps()
+	{
+		return ips;
+	}
+	
 	public int getOnlineCount()
 	{
 		return 0;
 	}
 	
-	public void chat(String message)
+	public void chat(String message, String color)
 	{
 		PacketBuilder builder = new PacketBuilder();
 		builder.addCInt(0x0E); //Chat Packet
 		
 		JSONObject json = new JSONObject();
 		json.put("text", message);
-		json.put("color", "white");
+		json.put("color", color);
 		
 		builder.addString(json.printJSON());
 		builder.addByte(0);
