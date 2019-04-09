@@ -2,9 +2,9 @@ package de.ecconia.mcserver.network.handler;
 
 public class HandshakeData
 {
-	private int version;
+	private final int port;
+	private final int version;
 	private String domain;
-	private int port;
 	
 	public HandshakeData(int version, String domain, int port)
 	{
@@ -32,5 +32,17 @@ public class HandshakeData
 	public String toString()
 	{
 		return "@'" + domain + ':' + port + "' v" + version;
+	}
+
+	public String[] extractBungee()
+	{
+		//Splitt on the official separator:
+		String[] parts = domain.split("\00");
+		//Restore the actual hostname, the array should be at least this long.
+		domain = parts[0];
+		
+		String[] arguments = new String[parts.length - 1];
+		System.arraycopy(parts, 1, arguments, 0, arguments.length);
+		return arguments;
 	}
 }

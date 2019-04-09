@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.crypto.SecretKey;
 
 import de.ecconia.mcserver.Core;
+import de.ecconia.mcserver.LoginType;
 import de.ecconia.mcserver.Player;
 import de.ecconia.mcserver.json.JSONNode;
 import de.ecconia.mcserver.json.JSONObject;
@@ -42,10 +43,9 @@ public class LoginHandler implements Handler
 	
 	private enum Stage
 	{
+		None,
 		Username,
 		Encryption,
-		Compression,
-		Join,
 		;
 	}
 	
@@ -63,6 +63,9 @@ public class LoginHandler implements Handler
 				return;
 			}
 			
+			//Don't accept anything from here on:
+			stage = Stage.None;
+			
 			username = reader.readString();
 			cc.debug("username == " + username);
 			
@@ -73,16 +76,50 @@ public class LoginHandler implements Handler
 			
 			//TODO: Check if a player may join at this point by using handshake data and username.
 			
-			PacketBuilder builder = new PacketBuilder();
-			builder.addCInt(1); //Encryption request.
-			builder.addString(""); //Server code
-			byte[] pubkey = core.getKeyPair().getPublic().getEncoded();
-			builder.addCInt(pubkey.length);
-			builder.addBytes(pubkey);
-			builder.addCInt(validation.length);
-			builder.addBytes(validation);
-			cc.sendPacket(builder.asBytes());
-			stage = Stage.Encryption;
+			if(core.getLoginType() == LoginType.Online)
+			{
+				PacketBuilder builder = new PacketBuilder();
+				builder.addCInt(1); //Encryption request.
+				builder.addString(""); //Server code
+				byte[] pubkey = core.getKeyPair().getPublic().getEncoded();
+				builder.addCInt(pubkey.length);
+				builder.addBytes(pubkey);
+				builder.addCInt(validation.length);
+				builder.addBytes(validation);
+				stage = Stage.Encryption;
+				cc.sendPacket(builder.asBytes());
+			}
+			else if(core.getLoginType() == LoginType.Offline)
+			{
+				UUID uuid = core.getIps().getUUIDforUsername(username);
+				if(uuid == null)
+				{
+					disconnect("You never connected to this server. No entry.");
+				}
+				else
+				{
+					login(uuid, username, true);
+				}
+			}
+			else if(core.getLoginType() == LoginType.Bungee)
+			{
+				String[] arguments = data.extractBungee();
+				if(arguments.length == 2 || arguments.length == 3)
+				{
+					//TODO: Move the bugee-parsing to actual handshake stage. To fix the IP there.
+					cc.debug("test: " + arguments[0] + " " + arguments[1]);
+					//InetSocketAddress address = new InetSocketAddress(arguments[0], ((InetSocketAddress) b.getSocketAddress()).getPort());
+					//UUID uuid = fixUUID(arguments[1]);
+				}
+				else
+				{
+					disconnect("You are not allowed to connect this way. Also tell the hoster, he is a noob.");
+				}
+			}
+			else
+			{
+				throw new RuntimeException("Login type " + core.getLoginType().name() + " not implmented yet.");
+			}
 		}
 		else if(id == 1)
 		{
@@ -131,27 +168,7 @@ public class LoginHandler implements Handler
 					UUID uuid = fixUUID(stringUUID);
 					String name = (String) entries.get("name");
 					
-					Player player = new Player(core, cc, data.getTargetVersion(), data.getTargetDomain(), data.getTargetPort(), uuid, name);
-					
-					//Send compression packet:
-					int compression = 256;
-					PacketBuilder pb = new PacketBuilder();
-					pb.addCInt(3);
-					pb.addCInt(compression);
-					cc.sendPacket(pb.asBytes());
-					
-					cc.waitUntilQueueEmpty();
-					
-					cc.enableCompression(compression);
-					
-					//Set join allow:
-					pb = new PacketBuilder();
-					pb.addCInt(2);
-					pb.addString(uuid.toString());
-					pb.addString(name);
-					cc.sendPacket(pb.asBytes());
-					
-					cc.setHandler(new GameHandler(core, cc, player));
+					login(uuid, name, true);
 				}
 				else
 				{
@@ -168,6 +185,34 @@ public class LoginHandler implements Handler
 			cc.debug("[LH] [WARNING] Unknown ID " + id + " Data: " + reader.toString());
 			cc.close();
 		}
+	}
+	
+	private void login(UUID uuid, String name, boolean shouldCompress)
+	{
+		Player player = new Player(core, cc, data.getTargetVersion(), data.getTargetDomain(), data.getTargetPort(), uuid, name);
+		
+		if(shouldCompress)
+		{
+			//Send compression packet:
+			int compression = 256;
+			PacketBuilder pb = new PacketBuilder();
+			pb.addCInt(3);
+			pb.addCInt(compression);
+			cc.sendPacket(pb.asBytes());
+			
+			cc.waitUntilQueueEmpty();
+			
+			cc.enableCompression(compression);
+		}
+		
+		//Set join allow:
+		PacketBuilder pb = new PacketBuilder();
+		pb.addCInt(2);
+		pb.addString(uuid.toString());
+		pb.addString(name);
+		cc.sendPacket(pb.asBytes());
+		
+		cc.setHandler(new GameHandler(core, cc, player));
 	}
 	
 	private UUID fixUUID(String uuid)

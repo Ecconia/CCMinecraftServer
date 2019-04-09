@@ -14,9 +14,12 @@ public class Core
 {
 	private final KeyPair keyPair;
 	private final IPLogger ips;
+	private final LoginType loginType;
 	
 	public Core()
 	{
+		//TODO: Import from some settings system.
+		loginType = LoginType.Online;
 		ips = new IPLogger();
 		keyPair = AsyncCryptTools.generateKeyPair();
 	}
@@ -207,6 +210,11 @@ public class Core
 	public void register(Player player, int id)
 	{
 		players.put(id, player);
+	}
+	
+	public LoginType getLoginType()
+	{
+		return loginType;
 	}
 	
 	public void dump(int id)

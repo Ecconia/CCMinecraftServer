@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -57,6 +58,19 @@ public class IPLogger
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public synchronized UUID getUUIDforUsername(String username)
+	{
+		for(Entry<String, Object> entry : uuidData.getEntries().entrySet())
+		{
+			if(username.equals(entry.getValue()))
+			{
+				return UUID.fromString(entry.getKey());
+			}
+		}
+		
+		return null;
 	}
 	
 	public synchronized void addEntry(UUID uuid, String name, String ip)
