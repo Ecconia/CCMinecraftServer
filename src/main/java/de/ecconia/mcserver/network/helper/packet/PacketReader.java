@@ -143,6 +143,11 @@ public class PacketReader
 	@Override
 	public String toString()
 	{
+		return format(data);
+	}
+	
+	public static String format(byte[] data)
+	{
 		StringBuilder builder = new StringBuilder();
 		
 		for(int i = 0; i < data.length; i++)

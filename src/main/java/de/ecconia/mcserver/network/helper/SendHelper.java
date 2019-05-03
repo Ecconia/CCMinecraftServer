@@ -3,6 +3,7 @@ package de.ecconia.mcserver.network.helper;
 import java.util.Arrays;
 
 import de.ecconia.mcserver.Player;
+import de.ecconia.mcserver.json.JSONObject;
 import de.ecconia.mcserver.network.PacketSender;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
 import de.ecconia.mcserver.world.Chunk;
@@ -21,6 +22,19 @@ public class SendHelper
 		builder.addCInt(0x0E); //Chat Packet
 		builder.addString(json);
 		builder.addByte(destination);
+		sender.sendPacket(builder.asBytes());
+	}
+	
+	public static void sendChat(PacketSender sender, String text)
+	{
+		JSONObject json = new JSONObject();
+		json.put("text", text);
+		json.put("color", "white");
+		
+		PacketBuilder builder = new PacketBuilder();
+		builder.addCInt(0x0E); //Chat Packet
+		builder.addString(json.printJSON());
+		builder.addByte(chatBox);
 		sender.sendPacket(builder.asBytes());
 	}
 	

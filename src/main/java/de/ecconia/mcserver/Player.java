@@ -2,6 +2,7 @@ package de.ecconia.mcserver;
 
 import java.util.UUID;
 
+import de.ecconia.mcserver.data.ItemStack;
 import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.PacketSender;
 import de.ecconia.mcserver.world.DefaultWorld;
@@ -22,6 +23,9 @@ public class Player implements PacketSender
 	private final UUID uuid;
 	private final String username;
 	
+	private final ItemStack[] hotbar = new ItemStack[9];
+	private int hotbarSlot = 0;
+	
 	public Player(Core core, ClientConnection cc, int targetVersion, String targetDomain, int targetPort, UUID uuid, String username)
 	{
 		this.core = core;
@@ -31,6 +35,11 @@ public class Player implements PacketSender
 		this.targetPort = targetPort;
 		this.uuid = uuid;
 		this.username = username;
+		
+		for(int i = 0; i < 9; i++)
+		{
+			hotbar[i] = new ItemStack(0, 0);
+		}
 	}
 	
 	@Override
@@ -71,5 +80,35 @@ public class Player implements PacketSender
 	public DefaultWorld getWorld()
 	{
 		return world;
+	}
+	
+	//Inventory state:
+	
+	public void setInventory(int slot, int itemID, int count)
+	{
+		if(slot >= 36 && slot <= 44)
+		{
+			hotbar[slot - 36] = new ItemStack(itemID, count);
+		}
+	}
+	
+	public ItemStack getHotbar(int slot)
+	{
+		return hotbar[slot];
+	}
+	
+	public void setHotbarSlot(int hotbarSlot)
+	{
+		this.hotbarSlot = hotbarSlot;
+	}
+	
+	public int getHotbarSlot()
+	{
+		return hotbarSlot;
+	}
+	
+	public ItemStack getCurrentItemStack()
+	{
+		return hotbar[hotbarSlot];
 	}
 }
