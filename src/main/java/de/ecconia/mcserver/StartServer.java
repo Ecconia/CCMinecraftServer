@@ -5,12 +5,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import de.ecconia.mcserver.network.ClientConnection;
+import de.ecconia.mcserver.resourcegen.ItemToBlock;
 
 public class StartServer
 {
 	public static void main(String[] args)
 	{
+		ItemToBlock.init();
 		Core core = new Core();
+		
+		System.out.println("Loading done, starting.");
 		try(ServerSocket myGreatServer = new ServerSocket(25565))
 		{
 			while(true)

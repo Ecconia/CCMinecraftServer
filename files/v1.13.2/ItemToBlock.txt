@@ -1,0 +1,790 @@
+124 nether_brick_slab nether_brick_slab 7335
+566 egg 
+781 music_disc_stal 
+235 birch_stairs birch_stairs 5044
+708 dragon_head dragon_head 5567
+150 diamond_ore diamond_ore 3049
+773 debug_stick 
+342 black_stained_glass_pane black_stained_glass_pane 6332
+211 spruce_fence_gate spruce_fence_gate 7389
+102 azure_bluet azure_bluet 1115
+563 slime_ball 
+721 rabbit 
+129 prismarine_brick_slab prismarine_brick_slab 6813
+662 parrot_spawn_egg 
+227 dragon_egg dragon_egg 4636
+335 light_gray_stained_glass_pane light_gray_stained_glass_pane 6108
+660 mule_spawn_egg 
+329 magenta_stained_glass_pane magenta_stained_glass_pane 5916
+310 large_fern large_fern 6854
+398 light_blue_concrete light_blue_concrete 8381
+599 light_blue_bed light_blue_bed 811
+065 lapis_ore lapis_ore 231
+162 birch_pressure_plate birch_pressure_plate 3373
+692 writable_book 
+110 gold_block gold_block 1123
+036 acacia_log acacia_log 86
+678 tropical_fish_spawn_egg 
+686 zombie_spawn_egg 
+547 redstone redstone_wire 3048
+453 dead_tube_coral_fan dead_tube_coral_fan 8561
+359 bone_block bone_block 8198
+679 turtle_spawn_egg 
+551 milk_bucket 
+177 birch_fence birch_fence 7581
+272 cyan_terracotta cyan_terracotta 5814
+346 prismarine_stairs prismarine_stairs 6641
+526 iron_boots 
+423 brown_concrete_powder brown_concrete_powder 8406
+225 end_stone end_stone 4635
+638 glistering_melon_slice 
+465 acacia_door acacia_door 7933
+408 green_concrete green_concrete 8391
+503 golden_axe 
+327 white_stained_glass_pane white_stained_glass_pane 5852
+688 zombie_pigman_spawn_egg 
+379 white_glazed_terracotta white_glazed_terracotta 8317
+239 cobblestone_wall cobblestone_wall 5201
+722 cooked_rabbit 
+204 red_mushroom_block red_mushroom_block 4115
+480 charcoal 
+357 nether_wart_block nether_wart_block 8194
+193 infested_stone infested_stone 3978
+038 stripped_oak_log stripped_oak_log 107
+419 light_gray_concrete_powder light_gray_concrete_powder 8402
+537 cooked_porkchop 
+420 cyan_concrete_powder cyan_concrete_powder 8403
+546 saddle 
+166 redstone_ore redstone_ore 3381
+452 horn_coral_fan horn_coral_fan 8579
+620 cooked_beef 
+410 black_concrete black_concrete 8393
+153 farmland farmland 3067
+096 red_wool red_wool 1097
+097 black_wool black_wool 1098
+483 gold_ingot 
+168 stone_button stone_button 3415
+208 melon melon 4244
+198 infested_chiseled_stone_bricks infested_chiseled_stone_bricks 3983
+782 music_disc_strad 
+469 structure_block structure_block 8598
+074 sticky_piston sticky_piston 1039
+371 light_gray_shulker_box light_gray_shulker_box 8271
+246 dark_oak_button dark_oak_button 5447
+318 gray_stained_glass gray_stained_glass 3585
+466 dark_oak_door dark_oak_door 7997
+026 sand sand 66
+238 beacon beacon 5137
+052 birch_wood birch_wood 116
+499 mushroom_stew 
+535 flint 
+205 mushroom_stem mushroom_stem 4179
+694 emerald 
+429 dead_brain_coral_block dead_brain_coral_block 8451
+670 shulker_spawn_egg 
+092 purple_wool purple_wool 1093
+385 pink_glazed_terracotta pink_glazed_terracotta 8341
+143 chorus_flower chorus_flower 8073
+306 lilac lilac 6846
+669 sheep_spawn_egg 
+176 spruce_fence spruce_fence 7549
+299 coal_block coal_block 6841
+487 wooden_pickaxe 
+696 flower_pot flower_pot 5266
+495 diamond_pickaxe 
+058 birch_leaves birch_leaves 185
+245 acacia_button acacia_button 5423
+049 stripped_dark_oak_wood stripped_dark_oak_wood 143
+269 pink_terracotta pink_terracotta 5811
+265 magenta_terracotta magenta_terracotta 5807
+585 gray_dye 
+378 black_shulker_box black_shulker_box 8313
+661 ocelot_spawn_egg 
+449 brain_coral_fan brain_coral_fan 8573
+558 sugar_cane sugar_cane 3458
+309 tall_grass tall_grass 6852
+312 orange_stained_glass orange_stained_glass 3579
+397 magenta_concrete magenta_concrete 8380
+355 chain_command_block chain_command_block 8188
+524 iron_chestplate 
+185 glowstone glowstone 3496
+171 snow_block snow_block 3425
+324 green_stained_glass green_stained_glass 3591
+344 prismarine_bricks prismarine_bricks 6560
+105 white_tulip white_tulip 1118
+484 iron_sword 
+598 magenta_bed magenta_bed 795
+004 diorite diorite 4
+051 spruce_wood spruce_wood 113
+372 cyan_shulker_box cyan_shulker_box 8277
+075 cobweb cobweb 1040
+640 blaze_spawn_egg 
+028 gravel gravel 68
+683 witch_spawn_egg 
+763 elytra 
+214 acacia_fence_gate acacia_fence_gate 7485
+390 blue_glazed_terracotta blue_glazed_terracotta 8361
+475 flint_and_steel fire 1647
+136 tnt tnt 1127
+369 pink_shulker_box pink_shulker_box 8259
+286 yellow_carpet yellow_carpet 6828
+000 air air 0
+213 jungle_fence_gate jungle_fence_gate 7453
+068 sandstone sandstone 245
+274 blue_terracotta blue_terracotta 5816
+459 conduit conduit 8590
+573 tropical_fish 
+130 dark_prismarine_slab dark_prismarine_slab 6819
+482 iron_ingot 
+710 nether_star 
+148 oak_stairs oak_stairs 1728
+705 player_head player_head 5527
+025 bedrock bedrock 33
+698 potato potatoes 5303
+220 nether_bricks nether_bricks 4496
+700 poisonous_potato 
+323 brown_stained_glass brown_stained_glass 3590
+737 magenta_banner magenta_banner 6902
+555 tropical_fish_bucket 
+319 light_gray_stained_glass light_gray_stained_glass 3586
+424 green_concrete_powder green_concrete_powder 8407
+144 purpur_block purpur_block 8074
+746 blue_banner blue_banner 7046
+468 comparator comparator 5651
+370 gray_shulker_box gray_shulker_box 8265
+197 infested_cracked_stone_bricks infested_cracked_stone_bricks 3982
+415 yellow_concrete_powder yellow_concrete_powder 8398
+571 cod 
+134 smooth_stone smooth_stone 7354
+161 spruce_pressure_plate spruce_pressure_plate 3371
+020 spruce_sapling spruce_sapling 24
+179 acacia_fence acacia_fence 7645
+478 arrow 
+557 clay_ball 
+108 brown_mushroom brown_mushroom 1121
+650 enderman_spawn_egg 
+771 iron_nugget 
+647 donkey_spawn_egg 
+522 chainmail_boots 
+298 terracotta terracotta 6840
+443 dead_brain_coral dead_brain_coral 8463
+332 lime_stained_glass_pane lime_stained_glass_pane 6012
+360 structure_void structure_void 8199
+095 green_wool green_wool 1096
+657 llama_spawn_egg 
+569 clock 
+330 light_blue_stained_glass_pane light_blue_stained_glass_pane 5948
+456 dead_fire_coral_fan dead_fire_coral_fan 8567
+645 creeper_spawn_egg 
+032 oak_log oak_log 74
+016 jungle_planks jungle_planks 18
+284 magenta_carpet magenta_carpet 6826
+169 snow snow 3423
+072 powered_rail powered_rail 1015
+515 leather_helmet 
+230 emerald_ore emerald_ore 4731
+039 stripped_spruce_log stripped_spruce_log 92
+352 cut_red_sandstone cut_red_sandstone 7177
+509 iron_hoe 
+293 blue_carpet blue_carpet 6835
+621 chicken 
+432 dead_horn_coral_block dead_horn_coral_block 8454
+744 cyan_banner cyan_banner 7014
+635 brewing_stand brewing_stand 4621
+199 stone_bricks stone_bricks 3984
+044 stripped_oak_wood stripped_oak_wood 128
+450 bubble_coral_fan bubble_coral_fan 8575
+160 oak_pressure_plate oak_pressure_plate 3369
+388 cyan_glazed_terracotta cyan_glazed_terracotta 8353
+464 jungle_door jungle_door 7869
+294 brown_carpet brown_carpet 6836
+568 fishing_rod 
+655 horse_spawn_egg 
+418 gray_concrete_powder gray_concrete_powder 8401
+716 quartz 
+754 beetroot beetroots 8162
+779 music_disc_mall 
+445 dead_fire_coral dead_fire_coral 8467
+155 ladder ladder 3179
+195 infested_stone_bricks infested_stone_bricks 3980
+589 light_blue_dye 
+518 leather_boots 
+543 water_bucket water 49
+444 dead_bubble_coral dead_bubble_coral 8465
+519 chainmail_helmet 
+112 oak_slab oak_slab 7263
+706 zombie_head zombie_head 5507
+462 spruce_door spruce_door 7741
+447 dead_tube_coral dead_tube_coral 8461
+752 chorus_fruit 
+442 horn_coral horn_coral 8479
+720 prismarine_crystals 
+411 white_concrete_powder white_concrete_powder 8394
+119 sandstone_slab sandstone_slab 7305
+595 cake cake 3513
+060 acacia_leaves acacia_leaves 213
+367 yellow_shulker_box yellow_shulker_box 8247
+747 brown_banner brown_banner 7062
+506 gunpowder 
+552 pufferfish_bucket 
+715 nether_brick 
+333 pink_stained_glass_pane pink_stained_glass_pane 6044
+027 red_sand red_sand 67
+373 purple_shulker_box purple_shulker_box 8283
+202 chiseled_stone_bricks chiseled_stone_bricks 3987
+173 clay clay 3442
+529 diamond_leggings 
+527 diamond_helmet 
+258 quartz_block quartz_block 5696
+528 diamond_chestplate 
+776 music_disc_blocks 
+507 wooden_hoe 
+082 white_wool white_wool 1083
+525 iron_leggings 
+520 chainmail_chestplate 
+321 purple_stained_glass purple_stained_glass 3588
+273 purple_terracotta purple_terracotta 5815
+609 green_bed green_bed 971
+425 red_concrete_powder red_concrete_powder 8408
+467 repeater repeater 3577
+218 mycelium mycelium 4494
+069 chiseled_sandstone chiseled_sandstone 246
+761 lingering_potion 
+040 stripped_birch_log stripped_birch_log 95
+281 hay_block hay_block 6823
+414 light_blue_concrete_powder light_blue_concrete_powder 8397
+586 pink_dye 
+283 orange_carpet orange_carpet 6825
+413 magenta_concrete_powder magenta_concrete_powder 8396
+399 yellow_concrete yellow_concrete 8382
+121 cobblestone_slab cobblestone_slab 7317
+726 armor_stand 
+358 red_nether_bricks red_nether_bricks 8195
+403 light_gray_concrete light_gray_concrete 8386
+064 glass glass 230
+149 chest chest 1752
+079 seagrass seagrass 1044
+277 red_terracotta red_terracotta 5819
+565 furnace_minecart 
+224 end_portal_frame end_portal_frame 4634
+517 leather_leggings 
+061 dark_oak_leaves dark_oak_leaves 227
+368 lime_shulker_box lime_shulker_box 8253
+022 jungle_sapling jungle_sapling 28
+707 creeper_head creeper_head 5547
+742 gray_banner gray_banner 6982
+504 string tripwire 4883
+263 white_terracotta white_terracotta 5805
+562 book 
+486 wooden_shovel 
+190 jungle_trapdoor jungle_trapdoor 3849
+297 black_carpet black_carpet 6839
+441 fire_coral fire_coral 8477
+381 magenta_glazed_terracotta magenta_glazed_terracotta 8325
+603 gray_bed gray_bed 875
+786 trident 
+063 wet_sponge wet_sponge 229
+086 yellow_wool yellow_wool 1087
+642 chicken_spawn_egg 
+593 bone 
+560 dried_kelp_block dried_kelp_block 8437
+267 yellow_terracotta yellow_terracotta 5809
+356 magma_block magma_block 8193
+636 cauldron cauldron 4625
+417 pink_concrete_powder pink_concrete_powder 8400
+684 wither_skeleton_spawn_egg 
+184 soul_sand soul_sand 3495
+437 horn_coral_block horn_coral_block 8459
+494 diamond_shovel 
+347 prismarine_brick_stairs prismarine_brick_stairs 6721
+728 golden_horse_armor 
+690 experience_bottle 
+104 orange_tulip orange_tulip 1117
+008 grass_block grass_block 9
+611 black_bed black_bed 1003
+545 minecart 
+457 dead_horn_coral_fan dead_horn_coral_fan 8569
+759 spectral_arrow 
+236 jungle_stairs jungle_stairs 5124
+107 oxeye_daisy oxeye_daisy 1120
+516 leather_chestplate 
+093 blue_wool blue_wool 1094
+753 popped_chorus_fruit 
+665 polar_bear_spawn_egg 
+043 stripped_dark_oak_log stripped_dark_oak_log 104
+610 red_bed red_bed 987
+544 lava_bucket lava 65
+739 yellow_banner yellow_banner 6934
+454 dead_brain_coral_fan dead_brain_coral_fan 8563
+623 rotten_flesh 
+303 slime_block slime_block 6493
+233 emerald_block emerald_block 4884
+745 purple_banner purple_banner 7030
+521 chainmail_leggings 
+717 tnt_minecart 
+175 oak_fence oak_fence 3492
+017 acacia_planks acacia_planks 19
+030 iron_ore iron_ore 70
+633 blaze_powder 
+259 quartz_pillar quartz_pillar 5700
+430 dead_bubble_coral_block dead_bubble_coral_block 8452
+421 purple_concrete_powder purple_concrete_powder 8404
+500 golden_sword 
+343 prismarine prismarine 6559
+613 filled_map 
+400 lime_concrete lime_concrete 8383
+111 iron_block iron_block 1124
+536 porkchop 
+106 pink_tulip pink_tulip 1119
+458 blue_ice blue_ice 8588
+685 wolf_spawn_egg 
+275 brown_terracotta brown_terracotta 5817
+209 vine vine 4300
+180 dark_oak_fence dark_oak_fence 7677
+260 quartz_stairs quartz_stairs 5780
+156 rail rail 3189
+735 white_banner white_banner 6870
+322 blue_stained_glass blue_stained_glass 3589
+727 iron_horse_armor 
+276 green_terracotta green_terracotta 5818
+296 red_carpet red_carpet 6838
+395 white_concrete white_concrete 8378
+050 oak_wood oak_wood 110
+416 lime_concrete_powder lime_concrete_powder 8399
+377 red_shulker_box red_shulker_box 8307
+266 light_blue_terracotta light_blue_terracotta 5808
+594 sugar 
+778 music_disc_far 
+391 brown_glazed_terracotta brown_glazed_terracotta 8365
+554 cod_bucket 
+577 ink_sac 
+498 bowl 
+071 note_block note_block 747
+703 skeleton_skull skeleton_skull 5467
+201 cracked_stone_bricks cracked_stone_bricks 3986
+146 purpur_stairs purpur_stairs 8157
+600 yellow_bed yellow_bed 827
+591 orange_dye 
+392 green_glazed_terracotta green_glazed_terracotta 8369
+471 scute 
+532 golden_chestplate 
+501 golden_shovel 
+234 spruce_stairs spruce_stairs 4964
+015 birch_planks birch_planks 17
+089 gray_wool gray_wool 1090
+671 silverfish_spawn_egg 
+311 white_stained_glass white_stained_glass 3578
+340 green_stained_glass_pane green_stained_glass_pane 6268
+481 diamond 
+426 black_concrete_powder black_concrete_powder 8409
+667 rabbit_spawn_egg 
+287 lime_carpet lime_carpet 6829
+422 blue_concrete_powder blue_concrete_powder 8405
+127 purpur_slab purpur_slab 7353
+256 hopper hopper 5695
+757 dragon_breath 
+005 polished_diorite polished_diorite 5
+268 lime_terracotta lime_terracotta 5810
+619 beef 
+699 baked_potato 
+138 mossy_cobblestone mossy_cobblestone 1129
+434 brain_coral_block brain_coral_block 8456
+777 music_disc_chirp 
+212 birch_fence_gate birch_fence_gate 7421
+331 yellow_stained_glass_pane yellow_stained_glass_pane 5980
+787 phantom_membrane 
+018 dark_oak_planks dark_oak_planks 20
+485 wooden_sword 
+101 allium allium 1114
+059 jungle_leaves jungle_leaves 199
+142 chorus_plant chorus_plant 8067
+542 bucket 
+187 oak_trapdoor oak_trapdoor 3657
+326 black_stained_glass black_stained_glass 3593
+531 golden_helmet 
+165 dark_oak_pressure_plate dark_oak_pressure_plate 3379
+601 lime_bed lime_bed 843
+062 sponge sponge 228
+584 light_gray_dye 
+253 daylight_detector daylight_detector 5683
+674 slime_spawn_egg 
+756 beetroot_soup 
+290 light_gray_carpet light_gray_carpet 6832
+783 music_disc_ward 
+751 end_crystal 
+076 grass grass 1041
+682 vindicator_spawn_egg 
+513 wheat wheat 3059
+141 end_rod end_rod 8003
+663 phantom_spawn_egg 
+523 iron_helmet 
+491 stone_pickaxe 
+654 guardian_spawn_egg 
+317 pink_stained_glass pink_stained_glass 3584
+081 piston piston 1058
+431 dead_fire_coral_block dead_fire_coral_block 8453
+615 melon_slice 
+231 ender_chest ender_chest 4739
+559 kelp kelp 8435
+090 light_gray_wool light_gray_wool 1091
+305 sunflower sunflower 6844
+608 brown_bed brown_bed 955
+789 heart_of_the_sea 
+186 jack_o_lantern jack_o_lantern 3506
+304 grass_path grass_path 8163
+132 smooth_red_sandstone smooth_red_sandstone 7357
+003 polished_granite polished_granite 3
+455 dead_bubble_coral_fan dead_bubble_coral_fan 8565
+154 furnace furnace 3075
+325 red_stained_glass red_stained_glass 3592
+118 stone_slab stone_slab 7299
+602 pink_bed pink_bed 859
+098 dandelion dandelion 1111
+625 blaze_rod 
+307 rose_bush rose_bush 6848
+280 iron_trapdoor iron_trapdoor 6558
+648 drowned_spawn_egg 
+159 stone_pressure_plate stone_pressure_plate 3303
+206 iron_bars iron_bars 4211
+512 wheat_seeds 
+407 brown_concrete brown_concrete 8390
+490 stone_shovel 
+404 cyan_concrete cyan_concrete 8387
+046 stripped_birch_wood stripped_birch_wood 134
+435 bubble_coral_block bubble_coral_block 8457
+687 zombie_horse_spawn_egg 
+748 green_banner green_banner 7078
+743 light_gray_banner light_gray_banner 6998
+724 rabbit_foot 
+493 diamond_sword 
+729 diamond_horse_armor 
+639 bat_spawn_egg 
+570 glowstone_dust 
+282 white_carpet white_carpet 6824
+580 cocoa_beans cocoa 4650
+409 red_concrete red_concrete 8392
+389 purple_glazed_terracotta purple_glazed_terracotta 8357
+704 wither_skeleton_skull wither_skeleton_skull 5487
+116 acacia_slab acacia_slab 7287
+451 fire_coral_fan fire_coral_fan 8577
+656 husk_spawn_egg 
+689 zombie_villager_spawn_egg 
+440 bubble_coral bubble_coral 8475
+067 dispenser dispenser 244
+087 lime_wool lime_wool 1088
+228 redstone_lamp redstone_lamp 4638
+496 diamond_axe 
+083 orange_wool orange_wool 1084
+470 turtle_helmet 
+053 jungle_wood jungle_wood 119
+629 potion 
+252 heavy_weighted_pressure_plate heavy_weighted_pressure_plate 5635
+627 gold_nugget 
+191 acacia_trapdoor acacia_trapdoor 3913
+240 mossy_cobblestone_wall mossy_cobblestone_wall 5265
+248 chipped_anvil chipped_anvil 5575
+145 purpur_pillar purpur_pillar 8077
+341 red_stained_glass_pane red_stained_glass_pane 6300
+505 feather 
+301 acacia_stairs acacia_stairs 6412
+262 dropper dropper 5804
+738 light_blue_banner light_blue_banner 6918
+606 purple_bed purple_bed 923
+085 light_blue_wool light_blue_wool 1086
+314 light_blue_stained_glass light_blue_stained_glass 3581
+023 acacia_sapling acacia_sapling 30
+712 firework_rocket 
+380 orange_glazed_terracotta orange_glazed_terracotta 8321
+394 black_glazed_terracotta black_glazed_terracotta 8377
+405 purple_concrete purple_concrete 8388
+612 cookie 
+137 bookshelf bookshelf 1128
+328 orange_stained_glass_pane orange_stained_glass_pane 5884
+288 pink_carpet pink_carpet 6830
+196 infested_mossy_stone_bricks infested_mossy_stone_bricks 3981
+549 oak_boat 
+041 stripped_jungle_log stripped_jungle_log 98
+788 nautilus_shell 
+078 dead_bush dead_bush 1043
+762 shield 
+709 carrot_on_a_stick 
+073 detector_rail detector_rail 1027
+249 damaged_anvil damaged_anvil 5579
+247 anvil anvil 5571
+769 totem_of_undying 
+313 magenta_stained_glass magenta_stained_glass 3580
+581 lapis_lazuli 
+785 music_disc_wait 
+659 mooshroom_spawn_egg 
+701 map 
+514 bread 
+579 cactus_green 
+140 torch torch 1131
+241 oak_button oak_button 5327
+677 stray_spawn_egg 
+472 iron_shovel 
+147 spawner spawner 1648
+750 black_banner black_banner 7110
+094 brown_wool brown_wool 1095
+576 cooked_salmon 
+295 green_carpet green_carpet 6837
+200 mossy_stone_bricks mossy_stone_bricks 3985
+463 birch_door birch_door 7805
+048 stripped_acacia_wood stripped_acacia_wood 140
+588 dandelion_yellow 
+644 cow_spawn_egg 
+541 sign sign 3107
+774 music_disc_13 
+784 music_disc_11 
+406 blue_concrete blue_concrete 8389
+488 wooden_axe 
+680 vex_spawn_egg 
+439 brain_coral brain_coral 8473
+614 shears 
+014 spruce_planks spruce_planks 16
+758 splash_potion 
+382 light_blue_glazed_terracotta light_blue_glazed_terracotta 8329
+693 written_book 
+626 ghast_tear 
+336 cyan_stained_glass_pane cyan_stained_glass_pane 6140
+207 glass_pane glass_pane 4243
+080 sea_pickle sea_pickle 8587
+255 nether_quartz_ore nether_quartz_ore 5685
+714 enchanted_book 
+182 carved_pumpkin carved_pumpkin 3502
+167 redstone_torch redstone_torch 3383
+446 dead_horn_coral dead_horn_coral 8469
+009 dirt dirt 10
+412 orange_concrete_powder orange_concrete_powder 8395
+055 dark_oak_wood dark_oak_wood 125
+158 lever lever 3301
+607 blue_bed blue_bed 939
+767 acacia_boat 
+164 acacia_pressure_plate acacia_pressure_plate 3377
+578 rose_red 
+673 skeleton_horse_spawn_egg 
+215 dark_oak_fence_gate dark_oak_fence_gate 7517
+567 compass 
+479 coal 
+163 jungle_pressure_plate jungle_pressure_plate 3375
+605 cyan_bed cyan_bed 907
+042 stripped_acacia_log stripped_acacia_log 101
+502 golden_pickaxe 
+477 bow 
+133 smooth_sandstone smooth_sandstone 7355
+012 cobblestone cobblestone 14
+254 redstone_block redstone_block 5684
+575 cooked_cod 
+592 bone_meal 
+556 brick 
+320 cyan_stained_glass cyan_stained_glass 3587
+597 orange_bed orange_bed 779
+135 bricks bricks 1125
+120 petrified_oak_slab petrified_oak_slab 7311
+668 salmon_spawn_egg 
+736 orange_banner orange_banner 6886
+438 tube_coral tube_coral 8471
+664 pig_spawn_egg 
+345 dark_prismarine dark_prismarine 6561
+123 stone_brick_slab stone_brick_slab 7329
+538 painting 
+181 pumpkin pumpkin 3493
+250 trapped_chest trapped_chest 5603
+396 orange_concrete orange_concrete 8379
+375 brown_shulker_box brown_shulker_box 8295
+617 pumpkin_seeds pumpkin_stem 4260
+019 oak_sapling oak_sapling 22
+339 brown_stained_glass_pane brown_stained_glass_pane 6236
+221 nether_brick_fence nether_brick_fence 4528
+596 white_bed white_bed 763
+114 birch_slab birch_slab 7275
+219 lily_pad lily_pad 4495
+361 observer observer 8211
+091 cyan_wool cyan_wool 1092
+011 podzol podzol 13
+497 stick 
+530 diamond_boots 
+006 andesite andesite 6
+436 fire_coral_block fire_coral_block 8458
+354 repeating_command_block repeating_command_block 8176
+300 packed_ice packed_ice 6842
+289 gray_carpet gray_carpet 6831
+643 cod_spawn_egg 
+223 enchanting_table enchanting_table 4613
+334 gray_stained_glass_pane gray_stained_glass_pane 6076
+587 lime_dye 
+723 rabbit_stew 
+308 peony peony 6850
+492 stone_axe 
+037 dark_oak_log dark_oak_log 89
+099 poppy poppy 1112
+637 ender_eye 
+489 stone_sword 
+564 chest_minecart 
+070 cut_sandstone cut_sandstone 247
+217 stone_brick_stairs stone_brick_stairs 4492
+115 jungle_slab jungle_slab 7281
+172 cactus cactus 3441
+188 spruce_trapdoor spruce_trapdoor 3721
+731 name_tag 
+278 black_terracotta black_terracotta 5820
+033 spruce_log spruce_log 77
+386 gray_glazed_terracotta gray_glazed_terracotta 8345
+243 birch_button birch_button 5375
+126 red_sandstone_slab red_sandstone_slab 7347
+264 orange_terracotta orange_terracotta 5806
+604 light_gray_bed light_gray_bed 891
+553 salmon_bucket 
+122 brick_slab brick_slab 7323
+057 spruce_leaves spruce_leaves 171
+732 command_block_minecart 
+271 light_gray_terracotta light_gray_terracotta 5813
+113 spruce_slab spruce_slab 7269
+270 gray_terracotta gray_terracotta 5812
+349 sea_lantern sea_lantern 6820
+170 ice ice 3424
+461 oak_door oak_door 3171
+376 green_shulker_box green_shulker_box 8301
+302 dark_oak_stairs dark_oak_stairs 6492
+474 iron_axe 
+374 blue_shulker_box blue_shulker_box 8289
+628 nether_wart nether_wart 4612
+056 oak_leaves oak_leaves 157
+733 mutton 
+772 knowledge_book 
+139 obsidian obsidian 1130
+291 cyan_carpet cyan_carpet 6833
+713 firework_star 
+780 music_disc_mellohi 
+292 purple_carpet purple_carpet 6834
+511 golden_hoe 
+622 cooked_chicken 
+646 dolphin_spawn_egg 
+010 coarse_dirt coarse_dirt 11
+348 dark_prismarine_stairs dark_prismarine_stairs 6801
+244 jungle_button jungle_button 5399
+428 dead_tube_coral_block dead_tube_coral_block 8450
+768 dark_oak_boat 
+734 cooked_mutton 
+178 jungle_fence jungle_fence 7613
+174 jukebox jukebox 3460
+337 purple_stained_glass_pane purple_stained_glass_pane 6172
+189 birch_trapdoor birch_trapdoor 3785
+476 apple 
+649 elder_guardian_spawn_egg 
+631 spider_eye 
+534 golden_boots 
+100 blue_orchid blue_orchid 1113
+711 pumpkin_pie 
+353 red_sandstone_stairs red_sandstone_stairs 7257
+676 squid_spawn_egg 
+152 crafting_table crafting_table 3051
+641 cave_spider_spawn_egg 
+157 cobblestone_stairs cobblestone_stairs 3269
+203 brown_mushroom_block brown_mushroom_block 4051
+151 diamond_block diamond_block 3050
+226 end_stone_bricks end_stone_bricks 8158
+702 golden_carrot 
+001 stone stone 1
+192 dark_oak_trapdoor dark_oak_trapdoor 3977
+634 magma_cream 
+540 enchanted_golden_apple 
+653 ghast_spawn_egg 
+741 pink_banner pink_banner 6966
+618 melon_seeds melon_stem 4268
+775 music_disc_cat 
+350 red_sandstone red_sandstone 7175
+582 purple_dye 
+691 fire_charge 
+351 chiseled_red_sandstone chiseled_red_sandstone 7176
+433 tube_coral_block tube_coral_block 8455
+229 sandstone_stairs sandstone_stairs 4730
+363 white_shulker_box white_shulker_box 8223
+672 skeleton_spawn_egg 
+077 fern fern 1042
+666 pufferfish_spawn_egg 
+285 light_blue_carpet light_blue_carpet 6827
+740 lime_banner lime_banner 6950
+533 golden_leggings 
+024 dark_oak_sapling dark_oak_sapling 32
+651 endermite_spawn_egg 
+448 tube_coral_fan tube_coral_fan 8571
+384 lime_glazed_terracotta lime_glazed_terracotta 8337
+590 magenta_dye 
+550 leather 
+765 birch_boat 
+222 nether_brick_stairs nether_brick_stairs 4608
+237 command_block command_block 5136
+681 villager_spawn_egg 
+548 snowball 
+402 gray_concrete gray_concrete 8385
+366 light_blue_shulker_box light_blue_shulker_box 8241
+630 glass_bottle 
+749 red_banner red_banner 7094
+054 acacia_wood acacia_wood 122
+316 lime_stained_glass lime_stained_glass 3583
+365 magenta_shulker_box magenta_shulker_box 8235
+760 tipped_arrow 
+315 yellow_stained_glass yellow_stained_glass 3582
+624 ender_pearl 
+539 golden_apple 
+128 prismarine_slab prismarine_slab 6807
+616 dried_kelp 
+652 evoker_spawn_egg 
+719 prismarine_shard 
+730 lead 
+066 lapis_block lapis_block 232
+508 stone_hoe 
+084 magenta_wool magenta_wool 1085
+755 beetroot_seeds 
+770 shulker_shell 
+210 oak_fence_gate oak_fence_gate 4332
+047 stripped_jungle_wood stripped_jungle_wood 137
+364 orange_shulker_box orange_shulker_box 8229
+460 iron_door iron_door 3367
+764 spruce_boat 
+279 barrier barrier 6494
+131 smooth_quartz smooth_quartz 7356
+725 rabbit_hide 
+088 pink_wool pink_wool 1089
+766 jungle_boat 
+387 light_gray_glazed_terracotta light_gray_glazed_terracotta 8349
+572 salmon 
+510 diamond_hoe 
+427 turtle_egg turtle_egg 8449
+393 red_glazed_terracotta red_glazed_terracotta 8373
+695 item_frame 
+103 red_tulip red_tulip 1116
+031 coal_ore coal_ore 71
+021 birch_sapling birch_sapling 26
+007 polished_andesite polished_andesite 7
+216 brick_stairs brick_stairs 4412
+675 spider_spawn_egg 
+232 tripwire_hook tripwire_hook 4755
+045 stripped_spruce_wood stripped_spruce_wood 131
+242 spruce_button spruce_button 5351
+658 magma_cube_spawn_egg 
+561 paper 
+035 jungle_log jungle_log 83
+473 iron_pickaxe 
+117 dark_oak_slab dark_oak_slab 7293
+183 netherrack netherrack 3494
+251 light_weighted_pressure_plate light_weighted_pressure_plate 5619
+034 birch_log birch_log 80
+261 activator_rail activator_rail 5792
+574 pufferfish 
+013 oak_planks oak_planks 15
+029 gold_ore gold_ore 69
+362 shulker_box shulker_box 8217
+632 fermented_spider_eye 
+257 chiseled_quartz_block chiseled_quartz_block 5697
+718 hopper_minecart 
+583 cyan_dye 
+383 yellow_glazed_terracotta yellow_glazed_terracotta 8333
+125 quartz_slab quartz_slab 7341
+338 blue_stained_glass_pane blue_stained_glass_pane 6204
+002 granite granite 2
+109 red_mushroom red_mushroom 1122
+194 infested_cobblestone infested_cobblestone 3979
+401 pink_concrete pink_concrete 8384
+697 carrot carrots 5295
