@@ -2,6 +2,8 @@ package de.ecconia.mcserver.network.helper.packet;
 
 import java.util.UUID;
 
+import de.ecconia.mcserver.data.Position;
+
 public class PacketReader
 {
 	private final byte[] data;
@@ -170,5 +172,11 @@ public class PacketReader
 		}
 		
 		return builder.toString();
+	}
+	
+	public Position readPosition()
+	{
+		long data = readLong();
+		return new Position((int) (data >> 38), (int) ((data >> 26) & 0xFFF), (int) (data << 38 >> 38));
 	}
 }

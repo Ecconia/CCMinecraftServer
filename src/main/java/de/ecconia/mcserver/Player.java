@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.PacketSender;
+import de.ecconia.mcserver.world.DefaultWorld;
 
 public class Player implements PacketSender
 {
@@ -56,5 +57,19 @@ public class Player implements PacketSender
 	public UUID getUUID()
 	{
 		return uuid;
+	}
+
+	//TODO: Following content is implementation specific, should be removed and abstracted.
+	
+	private DefaultWorld world;
+	
+	public void setWorld(DefaultWorld world)
+	{
+		this.world = world;
+	}
+	
+	public DefaultWorld getWorld()
+	{
+		return world;
 	}
 }
