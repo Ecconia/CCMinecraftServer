@@ -1,11 +1,11 @@
 package de.ecconia.mcserver.network.handler;
 
+import de.ecconia.java.json.JSONObject;
 import de.ecconia.mcserver.Core;
 import de.ecconia.mcserver.Player;
 import de.ecconia.mcserver.data.Face;
 import de.ecconia.mcserver.data.ItemStack;
 import de.ecconia.mcserver.data.Position;
-import de.ecconia.mcserver.json.JSONObject;
 import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.helper.SendHelper;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;

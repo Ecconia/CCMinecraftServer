@@ -7,12 +7,12 @@ import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
+import de.ecconia.java.json.JSONNode;
+import de.ecconia.java.json.JSONObject;
+import de.ecconia.java.json.JSONParser;
 import de.ecconia.mcserver.Core;
 import de.ecconia.mcserver.LoginType;
 import de.ecconia.mcserver.Player;
-import de.ecconia.mcserver.json.JSONNode;
-import de.ecconia.mcserver.json.JSONObject;
-import de.ecconia.mcserver.json.JSONParser;
 import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.helper.AuthServer;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;

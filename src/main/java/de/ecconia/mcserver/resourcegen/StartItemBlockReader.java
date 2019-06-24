@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import de.ecconia.mcserver.json.JSONArray;
-import de.ecconia.mcserver.json.JSONNode;
-import de.ecconia.mcserver.json.JSONObject;
-import de.ecconia.mcserver.json.JSONParser;
+import de.ecconia.java.json.JSONArray;
+import de.ecconia.java.json.JSONNode;
+import de.ecconia.java.json.JSONObject;
+import de.ecconia.java.json.JSONParser;
 
 public class StartItemBlockReader
 {

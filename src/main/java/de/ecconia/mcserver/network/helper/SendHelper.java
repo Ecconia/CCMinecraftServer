@@ -3,7 +3,7 @@ package de.ecconia.mcserver.network.helper;
 import java.util.Arrays;
 
 import de.ecconia.mcserver.Player;
-import de.ecconia.mcserver.json.JSONObject;
+import de.ecconia.java.json.JSONObject;
 import de.ecconia.mcserver.network.PacketSender;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
 import de.ecconia.mcserver.world.Chunk;

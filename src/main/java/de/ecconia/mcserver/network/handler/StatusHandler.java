@@ -8,10 +8,10 @@ import java.util.Base64;
 
 import javax.imageio.ImageIO;
 
+import de.ecconia.java.json.JSONArray;
+import de.ecconia.java.json.JSONObject;
 import de.ecconia.mcserver.Core;
 import de.ecconia.mcserver.Logger;
-import de.ecconia.mcserver.json.JSONArray;
-import de.ecconia.mcserver.json.JSONObject;
 import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
 import de.ecconia.mcserver.network.helper.packet.PacketReader;

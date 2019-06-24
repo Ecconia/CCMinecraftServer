@@ -13,9 +13,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import de.ecconia.mcserver.json.JSONArray;
-import de.ecconia.mcserver.json.JSONObject;
-import de.ecconia.mcserver.json.JSONParser;
+import de.ecconia.java.json.JSONArray;
+import de.ecconia.java.json.JSONObject;
+import de.ecconia.java.json.JSONParser;
 
 public class IPLogger
 {

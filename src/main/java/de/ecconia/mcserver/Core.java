@@ -4,7 +4,7 @@ import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.ecconia.mcserver.json.JSONObject;
+import de.ecconia.java.json.JSONObject;
 import de.ecconia.mcserver.network.helper.SendHelper;
 import de.ecconia.mcserver.network.tools.encryption.AsyncCryptTools;
 import de.ecconia.mcserver.world.DefaultWorld;
