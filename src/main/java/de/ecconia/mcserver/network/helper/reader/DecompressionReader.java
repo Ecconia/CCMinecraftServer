@@ -18,7 +18,7 @@ public class DecompressionReader implements Reader
 	{
 		return r.readByte();
 	}
-
+	
 	@Override
 	public byte[] readBytes(int amount)
 	{

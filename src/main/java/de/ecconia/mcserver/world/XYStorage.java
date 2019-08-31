@@ -119,7 +119,7 @@ public class XYStorage<T>
 		
 		lock.unlock();
 	}
-
+	
 	public boolean isEmpty()
 	{
 		return xList.isEmpty();

@@ -19,6 +19,7 @@ public class StartItemBlockReader
 	public static void main(String[] args)
 	{
 		Map<String, Integer> items = parseItems();
+		@SuppressWarnings("unused")
 		Set<String> blocks = parseBlocks();
 		Map<String, Integer> blockDefaults = parseBlockDefaults();
 		
@@ -117,7 +118,10 @@ public class StartItemBlockReader
 			for(Object o : states.getEntries())
 			{
 				JSONObject state = (JSONObject) o;
-				if(state.getEntries().containsKey("default"));
+				if(state.getEntries().containsKey("default"))
+				{
+				}
+				
 				{
 					defID = ((Number) state.getEntries().get("id")).intValue();
 				}

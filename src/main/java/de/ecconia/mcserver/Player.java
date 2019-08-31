@@ -66,22 +66,22 @@ public class Player implements PacketSender
 	{
 		return connection.isConnected();
 	}
-
+	
 	public ClientConnection getConnection()
 	{
 		return connection;
 	}
-
+	
 	public String getUsername()
 	{
 		return username;
 	}
-
+	
 	public UUID getUUID()
 	{
 		return uuid;
 	}
-
+	
 	//TODO: Following content is implementation specific, should be removed and abstracted.
 	
 	private DefaultWorld world;

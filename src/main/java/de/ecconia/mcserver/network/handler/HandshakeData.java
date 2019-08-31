@@ -33,7 +33,7 @@ public class HandshakeData
 	{
 		return "@'" + domain + ':' + port + "' v" + version;
 	}
-
+	
 	public String[] extractBungee()
 	{
 		//Splitt on the official separator:
