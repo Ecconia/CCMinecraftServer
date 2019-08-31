@@ -12,6 +12,10 @@ import de.ecconia.java.json.JSONArray;
 import de.ecconia.java.json.JSONObject;
 import de.ecconia.mcserver.Core;
 import de.ecconia.mcserver.Logger;
+import de.ecconia.mcserver.multiversion.IdConverter;
+import de.ecconia.mcserver.multiversion.ProtocolLib;
+import de.ecconia.mcserver.multiversion.packets.PacketsToClient;
+import de.ecconia.mcserver.multiversion.packets.PacketsToServer;
 import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
 import de.ecconia.mcserver.network.helper.packet.PacketReader;
@@ -21,21 +25,25 @@ public class StatusHandler implements Handler
 	private final Core core;
 	private final ClientConnection cc;
 	private final HandshakeData data;
+	private final IdConverter idConverter;
 	
 	public StatusHandler(Core core, ClientConnection cc, HandshakeData data)
 	{
 		this.cc = cc;
 		this.core = core;
 		this.data = data;
+		this.idConverter = ProtocolLib.getOrDefault(data.getTargetVersion());
 	}
 	
 	@Override
 	public void handlePacket(byte[] bytes)
 	{
 		PacketReader reader = new PacketReader(bytes);
-		int id = reader.readCInt();
 		
-		if(id == 0)
+		int id = reader.readCInt();
+		PacketsToServer type = idConverter.getStatusPacket(id);
+		
+		if(type == PacketsToServer.StSStatusRequest)
 		{
 			if(reader.remaining() > 0)
 			{
@@ -59,9 +67,9 @@ public class StatusHandler implements Handler
 			
 			//Description:
 			String otherLine = "Please join! Now!";
-			if(data.getTargetVersion() != 404)
+			if(data.getTargetVersion() != 404 && data.getTargetVersion() != 498)
 			{
-				otherLine = "Please only connect with version 1.13.2 else boom.";
+				otherLine = "Versions: 1.13.2 or 1.14.4";
 			}
 			else
 			{
@@ -73,7 +81,7 @@ public class StatusHandler implements Handler
 			}
 			
 			JSONObject description = new JSONObject();
-			description.put("text", "Ecconia's Custom Server 1.13.2\n" + otherLine);
+			description.put("text", "Ecc's cs. New: One shared world! See live what others are building! " + otherLine);
 			root.put("description", description);
 			
 			//Favicon:
@@ -100,16 +108,16 @@ public class StatusHandler implements Handler
 			cc.debug("Sending json: " + json);
 			
 			PacketBuilder mb = new PacketBuilder();
-			mb.addCInt(0);
+			mb.addCInt(idConverter.getID(PacketsToClient.StCStatusResponse));
 			mb.addString(json);
 			cc.sendPacket(mb.asBytes());
 		}
-		else if(id == 1)
+		else if(type == PacketsToServer.StSPingRequest)
 		{
 			long pingID = reader.readLong();
 			
 			PacketBuilder mb = new PacketBuilder();
-			mb.addCInt(1);
+			mb.addCInt(idConverter.getID(PacketsToClient.StCPingResponse));
 			mb.addLong(pingID);
 			cc.sendPacket(mb.asBytes());
 		}

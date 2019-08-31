@@ -6,6 +6,10 @@ import de.ecconia.mcserver.Player;
 import de.ecconia.mcserver.data.Face;
 import de.ecconia.mcserver.data.ItemStack;
 import de.ecconia.mcserver.data.Position;
+import de.ecconia.mcserver.multiversion.IdConverter;
+import de.ecconia.mcserver.multiversion.ProtocolLib;
+import de.ecconia.mcserver.multiversion.packets.PacketsToClient;
+import de.ecconia.mcserver.multiversion.packets.PacketsToServer;
 import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.helper.SendHelper;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
@@ -17,12 +21,14 @@ public class GameHandler implements Handler
 	private final Core core;
 	private final Player player;
 	private final ClientConnection cc;
+	private final IdConverter idConverter;
 	
 	public GameHandler(Core core, ClientConnection cc, Player player)
 	{
 		this.cc = cc;
 		this.core = core;
 		this.player = player;
+		this.idConverter = ProtocolLib.get(player.getProtocolVersion());
 		
 		core.playerJoinedGame(player);
 	}
@@ -31,14 +37,16 @@ public class GameHandler implements Handler
 	public void handlePacket(byte[] bytes)
 	{
 		PacketReader reader = new PacketReader(bytes);
-		int id = reader.readCInt();
 		
-		switch(id)
+		int id = reader.readCInt();
+		PacketsToServer type = idConverter.getPlayPacket(id);
+		
+		switch(type)
 		{
-		case 0x00:
+		case PtSTeleportConfirm:
 			cc.debug("[GH] Packet: Teleport confirm");
 			break;
-		case 0x02:
+		case PtSChatMessage:
 			String message = reader.readString();
 			cc.debug("[GH] Packet: Chat message: >" + message + "<");
 			core.broadcast(player.getUsername() + ": " + message, "white");
@@ -47,38 +55,47 @@ public class GameHandler implements Handler
 				disconnect("You requested to quit.");
 			}
 			break;
-		case 0x03:
+		case PtSClientStatus:
 			cc.debug("[GH] Packet: Client action");
 			break;
-		case 0x04:
+		case PtSClientSettings:
 			cc.debug("[GH] Packet: Client Settings");
 			break;
-		case 0x09:
+		case PtSCloseWindow:
 			cc.debug("[GH] Packet: Close window");
 			break;
-		case 0x10:
-			cc.debug("[GH] Packet: Player Position");
-			break;
-		case 0x0A:
+		case PtSPluginMessage:
 			cc.debug("[GH] Packet: Plugin Message, channel: " + reader.readString());
 			break;
-		case 0x0E:
+		case PtSKeepAlive:
 			cc.debug("[GH] Packet: Ping response");
 			break;
-		case 0x11:
+		case PtSPlayer:
+		{
+			cc.debug("[GH] Packet: Player Leviation");
+			break;
+		}
+		case PtSPlayerPosition:
+		{
+			cc.debug("[GH] Packet: Player Position");
+			break;
+		}
+		case PtSPlayerPositionAndLook:
+		{
 			cc.debug("[GH] Packet: Player position and look");
 			break;
-		case 0x12:
+		}
+		case PtSPlayerLook:
 			cc.debug("[GH] Packet: Player Look");
 			break;
-		case 0x17:
+		case PtSPlayerAbilities:
 			cc.debug("[GH] Packet: Player Abilities");
 			break;
-		case 0x18:
+		case PtSPlayerDigging:
 		{
 			cc.debug("[GH] Packet: Player action/digging");
 			int status = reader.readCInt();
-			Position position = reader.readPosition();
+			Position position = reader.readPosition(idConverter.getVersion() > 404);
 			//TODO: use: Face face = reader.readFace();
 			if(status == 0)
 			{
@@ -92,13 +109,13 @@ public class GameHandler implements Handler
 			}
 			break;
 		}
-		case 0x19:
+		case PtSEntityAction:
 			cc.debug("[GH] Packet: Entity action");
 			break;
-		case 0x1E:
+		case PtSAdvancementTab:
 			cc.debug("[GH] Packet: Advancement tab");
 			break;
-		case 0x21:
+		case PtSHeldItemChange:
 		{
 			int slot = reader.readShort();
 			cc.debug("[GH] Packet: Inventory slot: " + slot);
@@ -106,7 +123,7 @@ public class GameHandler implements Handler
 			player.setHotbarSlot(slot);
 			break;
 		}
-		case 0x24:
+		case PtSCreativeInventoryAction:
 		{
 			cc.debug("[GH] Packet: Creative inventory action");
 			
@@ -125,7 +142,7 @@ public class GameHandler implements Handler
 					byte[] nbtData = reader.readBytes(reader.remaining());
 					cc.debug("NBT bytes: (" + (nbtData.length + 1) + ") 01 " + PacketReader.format(nbtData));
 					
-					SendHelper.sendChat(player, "Uff, you tried to import an itemstack with NBT data, well oops this server can't parse NBT yet. Bear with it.");
+					SendHelper.sendChat(player, player.getIdConverter(), "Uff, you tried to import an itemstack with NBT data, well oops this server can't parse NBT yet. Bear with it.");
 				}
 				
 				player.setInventory(slot, itemID, count);
@@ -142,18 +159,32 @@ public class GameHandler implements Handler
 			
 			break;
 		}
-		case 0x27:
+		case PtSAnimation:
 			cc.debug("[GH] Packet: Animation");
 			break;
-		case 0x29:
+		case PtSPlayerBlockPlacement:
 		{
 			cc.debug("[GH] Packet: Block Place");
-			Position position = reader.readPosition();
+			Integer hand = null;
+			if(idConverter.getVersion() == 498)
+			{
+				hand = reader.readCInt();
+			}
+			Position position = reader.readPosition(idConverter.getVersion() > 404);
 			Face face = Face.fromNumber(reader.readCInt());
-			int hand = reader.readCInt();
+			if(idConverter.getVersion() == 404)
+			{
+				hand = reader.readCInt();
+			}
 			float xPos = reader.readFloat();
 			float yPos = reader.readFloat();
 			float zPos = reader.readFloat();
+			if(idConverter.getVersion() == 498)
+			{
+				//Wether playerhead is inside block - lol
+				//boolean insideBlock = 
+				reader.readBoolean();
+			}
 			
 			ItemStack placementItem = player.getCurrentItemStack();
 			Position placementPosition = position.transform(face);
@@ -170,18 +201,20 @@ public class GameHandler implements Handler
 			
 			break;
 		}
-		case 0x2A:
+		case PtSUseItem:
 			cc.debug("[GH] Packet: Use Item");
 			break;
 		default:
-			cc.debug("[GH] [WARNING] Unknown ID 0x" + Integer.toHexString(id) + " Data: " + reader.toString());
+		{
+			cc.debug("[GH] [WARNING] Unknown ID 0x" + Integer.toHexString(id) + " " + (type == null ? "" : "(" + IdConverter.getName(type) + ") ") + "Data: " + reader.toString());
+		}
 		}
 	}
 	
 	private void disconnect(String message)
 	{
 		PacketBuilder pb = new PacketBuilder();
-		pb.addCInt(0x1B); //Disconnect ID
+		pb.addCInt(idConverter.getID(PacketsToClient.PtCDisconnect)); //Disconnect ID
 		cc.debug("Disconnecting: " + message);
 		JSONObject json = new JSONObject();
 		json.put("text", message);

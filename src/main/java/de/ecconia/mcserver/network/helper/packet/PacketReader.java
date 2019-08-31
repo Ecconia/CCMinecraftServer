@@ -136,6 +136,25 @@ public class PacketReader
 		return new UUID(readLong(), readLong());
 	}
 	
+	public Position readPosition(boolean newer)
+	{
+		long data = readLong();
+		if(newer)
+		{
+			return new Position(
+				(int) (data >> 38),
+				(int) (data & 0xFFF),
+				(int) ((data << 26) >> 38));
+		}
+		else
+		{
+			return new Position(
+				(int) (data >> 38),
+				(int) ((data >> 26) & 0xFFF),
+				(int) (data << 38 >> 38));
+		}
+	}
+	
 	//Debug printing:
 	
 	private static final int charFix = (-'0' - 10 + 'a');
@@ -177,11 +196,5 @@ public class PacketReader
 		}
 		
 		return builder.toString();
-	}
-	
-	public Position readPosition()
-	{
-		long data = readLong();
-		return new Position((int) (data >> 38), (int) ((data >> 26) & 0xFFF), (int) (data << 38 >> 38));
 	}
 }

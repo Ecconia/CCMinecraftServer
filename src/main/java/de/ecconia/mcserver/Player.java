@@ -3,6 +3,8 @@ package de.ecconia.mcserver;
 import java.util.UUID;
 
 import de.ecconia.mcserver.data.ItemStack;
+import de.ecconia.mcserver.multiversion.IdConverter;
+import de.ecconia.mcserver.multiversion.ProtocolLib;
 import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.PacketSender;
 import de.ecconia.mcserver.world.DefaultWorld;
@@ -16,6 +18,7 @@ public class Player implements PacketSender
 	
 	//Info, where the player wanted to connect to:
 	private final int targetVersion;
+	private final IdConverter idConverter;
 	private final String targetDomain;
 	private final int targetPort;
 	
@@ -31,6 +34,7 @@ public class Player implements PacketSender
 		this.core = core;
 		this.connection = cc;
 		this.targetVersion = targetVersion;
+		this.idConverter = ProtocolLib.get(targetVersion);
 		this.targetDomain = targetDomain;
 		this.targetPort = targetPort;
 		this.uuid = uuid;
@@ -40,6 +44,16 @@ public class Player implements PacketSender
 		{
 			hotbar[i] = new ItemStack(0, 0);
 		}
+	}
+	
+	public int getProtocolVersion()
+	{
+		return targetVersion;
+	}
+	
+	public IdConverter getIdConverter()
+	{
+		return idConverter;
 	}
 	
 	@Override

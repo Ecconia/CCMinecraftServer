@@ -13,6 +13,10 @@ import de.ecconia.java.json.JSONParser;
 import de.ecconia.mcserver.Core;
 import de.ecconia.mcserver.LoginType;
 import de.ecconia.mcserver.Player;
+import de.ecconia.mcserver.multiversion.IdConverter;
+import de.ecconia.mcserver.multiversion.ProtocolLib;
+import de.ecconia.mcserver.multiversion.packets.PacketsToClient;
+import de.ecconia.mcserver.multiversion.packets.PacketsToServer;
 import de.ecconia.mcserver.network.ClientConnection;
 import de.ecconia.mcserver.network.helper.AuthServer;
 import de.ecconia.mcserver.network.helper.packet.PacketBuilder;
@@ -23,6 +27,7 @@ public class LoginHandler implements Handler
 {
 	private static final Random random = new Random();
 	
+	private final IdConverter idConverter;
 	private final Core core;
 	private final ClientConnection cc;
 	private final byte[] validation = new byte[4];
@@ -39,6 +44,8 @@ public class LoginHandler implements Handler
 		stage = Stage.Username;
 		//Create the validation token, for encryption:
 		random.nextBytes(validation);
+		
+		idConverter = ProtocolLib.get(data.getTargetVersion());
 	}
 	
 	private enum Stage
@@ -53,9 +60,11 @@ public class LoginHandler implements Handler
 	public void handlePacket(byte[] bytes)
 	{
 		PacketReader reader = new PacketReader(bytes);
-		int id = reader.readCInt();
 		
-		if(id == 0)
+		int id = reader.readCInt();
+		PacketsToServer type = idConverter.getLoginPacket(id);
+		
+		if(type == PacketsToServer.LtSStart)
 		{
 			if(stage != Stage.Username)
 			{
@@ -79,7 +88,7 @@ public class LoginHandler implements Handler
 			if(core.getLoginType() == LoginType.Online)
 			{
 				PacketBuilder builder = new PacketBuilder();
-				builder.addCInt(1); //Encryption request.
+				builder.addCInt(idConverter.getID(PacketsToClient.LtCEncryptionRequest)); //Encryption request.
 				builder.addString(""); //Server code
 				byte[] pubkey = core.getKeyPair().getPublic().getEncoded();
 				builder.addCInt(pubkey.length);
@@ -121,7 +130,7 @@ public class LoginHandler implements Handler
 				throw new RuntimeException("Login type " + core.getLoginType().name() + " not implmented yet.");
 			}
 		}
-		else if(id == 1)
+		else if(type == PacketsToServer.LtSEncryptionReponse)
 		{
 			if(stage != Stage.Encryption)
 			{
@@ -196,7 +205,7 @@ public class LoginHandler implements Handler
 			//Send compression packet:
 			int compression = 256;
 			PacketBuilder pb = new PacketBuilder();
-			pb.addCInt(3);
+			pb.addCInt(idConverter.getID(PacketsToClient.LtCSetCompression));
 			pb.addCInt(compression);
 			cc.sendPacket(pb.asBytes());
 			
@@ -207,7 +216,7 @@ public class LoginHandler implements Handler
 		
 		//Set join allow:
 		PacketBuilder pb = new PacketBuilder();
-		pb.addCInt(2);
+		pb.addCInt(idConverter.getID(PacketsToClient.LtCLoginSuccess));
 		pb.addString(uuid.toString());
 		pb.addString(name);
 		cc.sendPacket(pb.asBytes());
@@ -224,7 +233,7 @@ public class LoginHandler implements Handler
 	private void disconnect(String message)
 	{
 		PacketBuilder pb = new PacketBuilder();
-		pb.addCInt(0); //Disconnect ID
+		pb.addCInt(idConverter.getID(PacketsToClient.LtCDisconnect));
 		cc.debug("Disconnecting: " + message);
 		pb.addString("{\"text\":\"" + message.replace("\"", "\\\"") + "\",\"color\":\"red\"}");
 		cc.sendAndClose(pb.asBytes());

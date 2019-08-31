@@ -32,12 +32,21 @@ public class PacketBuilder
 	//########################################################
 	//MC Custom:
 	
-	public void addLocation(int x, int y, int z)
+	public void addLocation(boolean newer, int x, int y, int z)
 	{
-		addLong(
-			(((long) x & 0x3FFFFFF) << 38) |
-				(((long) y & 0xFFF) << 26) |
-				((long) z & 0x3FFFFFF));
+		if(newer)
+		{
+			addLong((((long) x & 0x3FFFFFF) << 38) |
+				(((long) z & 0x3FFFFFF) << 12) |
+				((long) y & 0xFFF));
+		}
+		else
+		{
+			addLong(
+				(((long) x & 0x3FFFFFF) << 38) |
+					(((long) y & 0xFFF) << 26) |
+					((long) z & 0x3FFFFFF));
+		}
 	}
 	
 	public void addCInt(int i)

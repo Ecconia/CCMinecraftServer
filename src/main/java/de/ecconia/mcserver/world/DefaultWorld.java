@@ -45,18 +45,18 @@ public class DefaultWorld
 		players.add(player);
 		
 		//Creative + Overworld + Peaceful
-		SendHelper.sendJoinGame(player, 0, 1, 0, 0, 0, "default", false);
-		SendHelper.sendPositionAndLook(player, 0, 64, 0, 0, 0, (byte) 0, 0);
+		SendHelper.sendJoinGame(player, player.getIdConverter(), 0, 1, 0, 0, 0, "default", false);
+		SendHelper.sendPositionAndLook(player, player.getIdConverter(), 0, 64, 0, 0, 0, (byte) 0, 0);
 		
 		for(Iterator<Chunk> it = chunkMap.iterator(); it.hasNext();)
 		{
 			Chunk chunk = it.next();
-			SendHelper.sendLoadChunk(player, chunk);
+			SendHelper.sendLoadChunk(player, player.getIdConverter(), chunk);
 		}
 		
 		//TBI: What are all these values doing? I just want a border!
 		int borderDist = 210;
-		SendHelper.sendWorldBorderInit(player, 0, 0, borderDist, borderDist, 0, borderDist, 0, 0);
+		SendHelper.sendWorldBorderInit(player, player.getIdConverter(), 0, 0, borderDist, borderDist, 0, borderDist, 0, 0);
 	}
 	
 	public void destroyBlock(Player player, Position position)
@@ -102,7 +102,7 @@ public class DefaultWorld
 		Chunk chunk = chunkMap.get(position.getChunkX(), position.getChunkZ());
 		for(Player player : players)
 		{
-			SendHelper.sendLoadChunk(player, chunk);
+			SendHelper.sendLoadChunk(player, player.getIdConverter(), chunk);
 		}
 	}
 }

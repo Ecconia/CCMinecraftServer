@@ -48,7 +48,7 @@ public class Core
 			{
 				while(!Thread.currentThread().isInterrupted())
 				{
-					SendHelper.sendPing(player, 0);
+					SendHelper.sendPing(player, player.getIdConverter(), 0);
 					Thread.sleep(5000);
 				}
 			}
@@ -65,7 +65,7 @@ public class Core
 		JSONObject json = new JSONObject();
 		json.put("text", "Welcome to this custom server, hope ya'll like what ya see!");
 		json.put("color", "yellow");
-		SendHelper.sendChat(player, json.printJSON(), SendHelper.chatBox);
+		SendHelper.sendChat(player, player.getIdConverter(), json.printJSON(), SendHelper.chatBox);
 		
 		broadcast(player.getUsername() + " joined this test-server.", "yellow");
 		
@@ -90,7 +90,7 @@ public class Core
 		
 		for(Player player : players.values())
 		{
-			SendHelper.sendChat(player, json.printJSON(), SendHelper.chatBox);
+			SendHelper.sendChat(player, player.getIdConverter(), json.printJSON(), SendHelper.chatBox);
 		}
 	}
 	
