@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.ecconia.java.json.JSONObject;
+import de.ecconia.mcserver.features.GlobalPlayerList;
 import de.ecconia.mcserver.network.helper.SendHelper;
 import de.ecconia.mcserver.network.tools.encryption.AsyncCryptTools;
 import de.ecconia.mcserver.world.DefaultWorld;
@@ -17,10 +18,12 @@ public class Core
 	
 	//TODO: Dump default world and add many worlds...
 	private final DefaultWorld defaultWorld;
+	private final GlobalPlayerList playerlist;
 	
 	public Core()
 	{
 		defaultWorld = new DefaultWorld();
+		playerlist = new GlobalPlayerList();
 		//TODO: Import from some settings system.
 		loginType = LoginType.Online;
 		ips = new IPLogger();
@@ -40,7 +43,7 @@ public class Core
 			}).start();
 		}
 		
-		register(player, player.getConnection().getID());
+		players.put(player.getConnection().getID(), player);
 		
 		//Ping thread to keep the connection alive. Should ping every 5 seconds.
 		Thread pingThread = new Thread(() -> {
@@ -68,6 +71,8 @@ public class Core
 		SendHelper.sendChat(player, player.getIdConverter(), json.printJSON(), SendHelper.chatBox);
 		
 		broadcast(player.getUsername() + " joined this test-server.", "yellow");
+		
+		playerlist.joined(player);
 		
 		defaultWorld.join(player);
 	}
@@ -98,11 +103,6 @@ public class Core
 	
 	private final Map<Integer, Player> players = new HashMap<>();
 	
-	public void register(Player player, int id)
-	{
-		players.put(id, player);
-	}
-	
 	public LoginType getLoginType()
 	{
 		return loginType;
@@ -114,6 +114,7 @@ public class Core
 		if(player != null)
 		{
 			defaultWorld.leave(player);
+			playerlist.left(player);
 			broadcast(player.getUsername() + " left.", "yellow");
 		}
 	}
