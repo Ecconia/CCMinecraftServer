@@ -11,10 +11,11 @@ public class StartServer
 {
 	public static void main(String[] args)
 	{
+		System.out.println("Loading...");
 		ItemToBlock.init();
 		Core core = new Core();
 		
-		System.out.println("Loading done, starting.");
+		System.out.println("Starting...");
 		try(ServerSocket myGreatServer = new ServerSocket(25565))
 		{
 			while(true)
