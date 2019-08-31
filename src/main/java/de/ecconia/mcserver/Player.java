@@ -125,4 +125,49 @@ public class Player implements PacketSender
 	{
 		return hotbar[hotbarSlot];
 	}
+	
+	//Position state:
+	
+	//TODO: Handle leviation properly.
+	private boolean onGround;
+	private double x, y, z;
+	private float yaw, pitch;
+	
+	public void setPosition(boolean onGround)
+	{
+		this.onGround = onGround;
+		
+		//world.playerMove(this, x, y, z, yaw, pitch, onGround);
+	}
+	
+	public void setPosition(double x, double y, double z, boolean onGround)
+	{
+		this.onGround = onGround;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		
+		world.playerMove(this, x, y, z, yaw, pitch, onGround);
+	}
+	
+	public void setPosition(double x, double y, double z, float yaw, float pitch, boolean onGround)
+	{
+		this.onGround = onGround;
+		this.yaw = yaw;
+		this.pitch = pitch;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		
+		world.playerMove(this, x, y, z, yaw, pitch, onGround);
+	}
+	
+	public void setPosition(float yaw, float pitch, boolean onGround)
+	{
+		this.onGround = onGround;
+		this.yaw = yaw;
+		this.pitch = pitch;
+		
+		world.playerMove(this, x, y, z, yaw, pitch, onGround);
+	}
 }

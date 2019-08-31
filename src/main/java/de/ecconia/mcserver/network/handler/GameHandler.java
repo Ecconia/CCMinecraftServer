@@ -2,6 +2,7 @@ package de.ecconia.mcserver.network.handler;
 
 import de.ecconia.java.json.JSONObject;
 import de.ecconia.mcserver.Core;
+import de.ecconia.mcserver.Logger;
 import de.ecconia.mcserver.Player;
 import de.ecconia.mcserver.data.Face;
 import de.ecconia.mcserver.data.ItemStack;
@@ -73,20 +74,63 @@ public class GameHandler implements Handler
 		case PtSPlayer:
 		{
 			cc.debug("[GH] Packet: Player Leviation");
+			
+			boolean onGround = reader.readBoolean();
+			if(reader.remaining() > 0)
+			{
+				Logger.warning("Player Leviation packet had more bytes to read.");
+			}
+			
+			player.setPosition(onGround);
 			break;
 		}
 		case PtSPlayerPosition:
 		{
 			cc.debug("[GH] Packet: Player Position");
+			
+			double x = reader.readDouble();
+			double y = reader.readDouble();
+			double z = reader.readDouble();
+			boolean onGround = reader.readBoolean();
+			if(reader.remaining() > 0)
+			{
+				Logger.warning("Player Position packet had more bytes to read.");
+			}
+			
+			player.setPosition(x, y, z, onGround);
 			break;
 		}
 		case PtSPlayerPositionAndLook:
 		{
 			cc.debug("[GH] Packet: Player position and look");
+			
+			double x = reader.readDouble();
+			double y = reader.readDouble();
+			double z = reader.readDouble();
+			float yaw = reader.readFloat();
+			float pitch = reader.readFloat();
+			boolean onGround = reader.readBoolean();
+			if(reader.remaining() > 0)
+			{
+				Logger.warning("Player Position packet had more bytes to read.");
+			}
+			
+			player.setPosition(x, y, z, yaw, pitch, onGround);
 			break;
 		}
 		case PtSPlayerLook:
 			cc.debug("[GH] Packet: Player Look");
+			
+			float yaw = reader.readFloat();
+			float pitch = reader.readFloat();
+			boolean onGround = reader.readBoolean();
+			if(reader.remaining() > 0)
+			{
+				Logger.warning("Player Position packet had more bytes to read.");
+			}
+			
+			player.setPosition(yaw, pitch, onGround);
+			
 			break;
 		case PtSPlayerAbilities:
 			cc.debug("[GH] Packet: Player Abilities");

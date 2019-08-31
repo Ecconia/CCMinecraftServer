@@ -113,6 +113,7 @@ public class Core
 		Player player = players.remove(id);
 		if(player != null)
 		{
+			defaultWorld.leave(player);
 			broadcast(player.getUsername() + " left.", "yellow");
 		}
 	}

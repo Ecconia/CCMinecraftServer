@@ -7,12 +7,15 @@ import java.util.Set;
 import de.ecconia.mcserver.Logger;
 import de.ecconia.mcserver.Player;
 import de.ecconia.mcserver.data.Position;
+import de.ecconia.mcserver.features.PlayerPosUpdater;
 import de.ecconia.mcserver.network.helper.SendHelper;
 
 public class DefaultWorld
 {
 	private final Set<Player> players = new HashSet<>();
 	private final XYStorage<Chunk> chunkMap = new XYStorage<>();
+	
+	private final PlayerPosUpdater ppu = new PlayerPosUpdater();
 	
 	public DefaultWorld()
 	{
@@ -57,6 +60,14 @@ public class DefaultWorld
 		//TBI: What are all these values doing? I just want a border!
 		int borderDist = 210;
 		SendHelper.sendWorldBorderInit(player, player.getIdConverter(), 0, 0, borderDist, borderDist, 0, borderDist, 0, 0);
+		
+		ppu.join(player);
+	}
+	
+	public void leave(Player player)
+	{
+		players.remove(player);
+		ppu.leave(player);
 	}
 	
 	public void destroyBlock(Player player, Position position)
@@ -104,5 +115,10 @@ public class DefaultWorld
 		{
 			SendHelper.sendLoadChunk(player, player.getIdConverter(), chunk);
 		}
+	}
+	
+	public void playerMove(Player player, double x, double y, double z, float yaw, float pitch, boolean onGround)
+	{
+		ppu.update(player, x, y, z, yaw, pitch, onGround);
 	}
 }
